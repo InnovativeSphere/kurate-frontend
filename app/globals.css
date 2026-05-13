@@ -1,0 +1,279 @@
+@tailwind utilities;
+@import 'tailwindcss';
+
+/* then your custom CSS below */
+
+/* ============================================================ */
+/* KURATE DESIGN SYSTEM — globals.css                          */
+/* Three-theme system: light (blue-led), dark (purple-led),   */
+/* lattie (warm neutral, blurple revealed on interaction)      */
+/* Derived from logo gradient: #4F9EFF → #7B5FFF → #C4B5FD   */
+/* ============================================================ */
+
+/* ============================================================ */
+/* BRAND TOKENS — extracted from logo gradient                 */
+/* ============================================================ */
+:root {
+  --brand-blue: #4f9eff; /* K — electric blue anchor  */
+  --brand-blurple: #7b5fff; /* cart dots — blurple core  */
+  --brand-lavender: #c4b5fd; /* "ate" — soft lavender     */
+  --brand-deep: #0a0a0f; /* logo bg — purple-black    */
+
+  /* Gradient — mirrors logo direction */
+  --brand-gradient: linear-gradient(
+    135deg,
+    #4f9eff 0%,
+    #7b5fff 50%,
+    #c4b5fd 100%
+  );
+  --brand-gradient-subtle: linear-gradient(
+    135deg,
+    rgba(79, 158, 255, 0.15) 0%,
+    rgba(123, 95, 255, 0.15) 50%,
+    rgba(196, 181, 253, 0.1) 100%
+  );
+}
+
+/* ============================================================ */
+/* THEME: LIGHT — Blue is dominant                             */
+/* ============================================================ */
+:root,
+[data-theme="light"] {
+  /* Surfaces */
+  --bg: #f8f9ff;
+  --bg-subtle: #eef2ff;
+  --bg-elevated: #ffffff;
+  --surface: rgba(255, 255, 255, 0.85);
+  --surface-hover: rgba(238, 242, 255, 0.9);
+  --surface-rgb: 255, 255, 255;
+
+  /* Text */
+  --text-primary: #0d0f1a;
+  --text-secondary: #4b5170;
+  --text-muted: #9299b8;
+  --text-inverse: #ffffff;
+
+  /* Borders */
+  --border: #dde2f4;
+  --border-strong: #b8c2e8;
+
+  /* Primary — BLUE leads */
+  --primary: #4f9eff;
+  --primary-hover: #2e87ff;
+  --primary-active: #1a74f0;
+  --primary-subtle: #eef5ff;
+  --primary-text: #ffffff;
+
+  /* Secondary accent — blurple in supporting role */
+  --accent: #7b5fff;
+  --accent-hover: #6a4eee;
+  --accent-subtle: #f0edff;
+
+  /* Tertiary — lavender for decoration */
+  --tertiary: #c4b5fd;
+
+  /* Semantic */
+  --success: #00b86e;
+  --warning: #e6a817;
+  --error: #ef4444;
+  --info: #4f9eff;
+}
+
+/* ============================================================ */
+/* THEME: DARK — Purple is dominant                            */
+/* ============================================================ */
+[data-theme="dark"] {
+  /* Surfaces */
+  --bg: #0a0a0f;
+  --bg-subtle: #0f0f1a;
+  --bg-elevated: #141420;
+  --surface: rgba(20, 20, 32, 0.85);
+  --surface-hover: rgba(30, 30, 50, 0.9);
+  --surface-rgb: 20, 20, 32;
+
+  /* Text */
+  --text-primary: #f0eeff;
+  --text-secondary: #a89ec8;
+  --text-muted: #6b6088;
+  --text-inverse: #0a0a0f;
+
+  /* Borders */
+  --border: #1e1a30;
+  --border-strong: #2e2850;
+
+  /* Primary — PURPLE leads */
+  --primary: #7b5fff;
+  --primary-hover: #9278ff;
+  --primary-active: #6a4eee;
+  --primary-subtle: #1a1530;
+  --primary-text: #ffffff;
+
+  /* Secondary accent — blue in supporting role */
+  --accent: #4f9eff;
+  --accent-hover: #6aadff;
+  --accent-subtle: #0d1528;
+
+  /* Tertiary — lavender for glows and decoration */
+  --tertiary: #c4b5fd;
+
+  /* Semantic */
+  --success: #00c47a;
+  --warning: #ffb930;
+  --error: #ff6b6b;
+  --info: #4f9eff;
+}
+
+/* ============================================================ */
+/* THEME: LATTIE — Warm neutral, blurple hidden until touched  */
+/* ============================================================ */
+[data-theme="lattie"] {
+  /* Surfaces — soft, muted warm gray */
+  --bg: #ebe6dd;
+  --bg-subtle: #e3ddd3;
+  --bg-elevated: #f2efe8;
+  --surface: rgba(242, 239, 232, 0.9);
+  --surface-hover: rgba(232, 225, 215, 0.96);
+  --surface-rgb: 242, 239, 232;
+
+  /* Text — calm, slightly warm dark tones */
+  --text-primary: #1a1814;
+  --text-secondary: #5c5851;
+  --text-muted: #8b8780;
+  --text-inverse: #f2efe8;
+
+  /* Borders — soft, understated */
+  --border: #ccc7be;
+  --border-strong: #b0aba2;
+
+  /* Primary — grounded gray with blue‑violet hover */
+  --primary: #7c7870;
+  --primary-hover: #7b5fff;
+  --primary-active: #6a4eee;
+  --primary-subtle: #e8e5df;
+  --primary-text: #faf8f5;
+
+  /* Accent — warm gray with blue hover */
+  --accent: #99958d;
+  --accent-hover: #4f9eff;
+  --accent-subtle: #e8e5df;
+
+  /* Tertiary — barely‑there lavender */
+  --tertiary: #d4cfd8;
+
+  /* Semantic — understated, natural tones */
+  --success: #5e8a64;
+  --warning: #9a823a;
+  --error: #9a5a5a;
+  --info: #5a7a9a;
+}
+
+/* ============================================================ */
+/* GLOBAL RESETS                                               */
+/* ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  color: var(--text-primary);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* ============================================================ */
+/* UTILITY CLASSES                                             */
+/* ============================================================ */
+
+/* Brand gradient text */
+.text-gradient {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glassmorphism card */
+.glass {
+  background: rgba(var(--surface-rgb), 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-subtle);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
+}
