@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/app/lib/theme';
 
 const progressColors = {
   light: 'linear-gradient(90deg, #4F9EFF 0%, #7B5FFF 50%, #C4B5FD 100%)',

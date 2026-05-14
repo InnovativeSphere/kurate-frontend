@@ -1,7 +1,7 @@
 // components/ui/ThemeSwitcher.tsx
 'use client';
 
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/app/lib/theme';
 import { Sun, Moon, Paintbrush } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';

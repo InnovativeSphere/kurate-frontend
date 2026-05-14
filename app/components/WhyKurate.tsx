@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/app/lib/theme';
 import { useEffect, useRef, useState } from 'react';
 import {
   ShieldCheck,

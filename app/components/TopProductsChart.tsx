@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/app/lib/theme';
 import { useEffect, useState } from 'react';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });

@@ -4,7 +4,7 @@
 import { useState, FormEvent, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
+import { useTheme } from '@/app/lib/theme';
 import {
   Mail,
   Lock,

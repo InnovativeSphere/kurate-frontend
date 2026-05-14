@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/app/lib/theme';
 import { Store, ShoppingBag, ArrowRight, Sparkles } from 'lucide-react';
 
 // ─────────────────────────────────────────────────────────────

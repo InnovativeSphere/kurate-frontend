@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   description:
     "Discover curated gadgets from trusted local vendors. Phones, laptops, monitors, and desk accessories — all in one place.",
   icons: {
-    icon: "/favicon.ico",         // 👈 added favicon path
+    icon: "/favicon.ico",
   },
   openGraph: {
     title: "Kurate — Premium Tech Marketplace",

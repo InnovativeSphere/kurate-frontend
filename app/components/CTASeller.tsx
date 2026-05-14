@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Store, Zap, CheckCircle2, Copy } from 'lucide-react';
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/app/lib/theme';
 
 const perks = [
   'Free to list. Always.',

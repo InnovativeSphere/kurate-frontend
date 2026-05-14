@@ -1,5 +1,5 @@
 // hooks/useThemeColors.ts
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/app/lib/theme';
 import { useEffect, useState } from 'react';
 
 export function useThemeColors() {

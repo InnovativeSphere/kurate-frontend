@@ -1,7 +1,7 @@
 // components/FeaturedProducts.tsx
 "use client";
 
-import { useTheme } from "next-themes";
+import { useTheme } from '@/app/lib/theme';
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {

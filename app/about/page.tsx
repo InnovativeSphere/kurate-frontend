@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "next-themes";
+import { useTheme } from '@/app/lib/theme';
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";

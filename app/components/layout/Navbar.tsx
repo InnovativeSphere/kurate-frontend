@@ -16,7 +16,7 @@ import {
   User,
   LogOut,
 } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTheme } from '@/app/lib/theme';
 import { ThemeSwitcher } from "../ui/ThemeSwitcher";
 import { useAppSelector, useAppDispatch } from "@/app/redux/hooks";
 import { RootState } from "@/app/redux/store";
