@@ -54,8 +54,6 @@ export function Navbar() {
     };
   }, [mobileOpen]);
 
-  // ❌ Removed the problematic theme‑sync effect that forced theme to light
-
   // Sliding underline for desktop
   useEffect(() => {
     if (!mounted) return;
@@ -340,7 +338,7 @@ export function Navbar() {
             </button>
           </div>
 
-          {/* Mobile nav links – increased spacing */}
+          {/* Mobile nav links */}
           <div className="flex-1 px-5 py-8">
             <div className="space-y-4">
               {publicNavItems.map((item) => {
@@ -376,11 +374,14 @@ export function Navbar() {
 
           {/* Mobile bottom actions – increased spacing */}
           <div className="p-6 space-y-4 border-t" style={{ borderColor }}>
+             <div className="flex justify-center pt-2">
+              <ThemeSwitcher />
+            </div>
             {!isAuthenticated ? (
               <Link
                 href="/login"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center w-full py-4 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-95"
+                className="flex items-center justify-center w-full py-3 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-95"
                 style={{
                   color: textPrimary,
                   border: `1px solid ${borderColor}`,
@@ -394,7 +395,7 @@ export function Navbar() {
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-4 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-95"
+                  className="flex my-2 items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-95"
                   style={{
                     color: textPrimary,
                     border: `1px solid ${borderColor}`,
@@ -407,7 +408,7 @@ export function Navbar() {
                 <Link
                   href="/profile"
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-4 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-95"
+                  className="flex my-2 items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-95"
                   style={{
                     color: textPrimary,
                     border: `1px solid ${borderColor}`,
@@ -422,7 +423,7 @@ export function Navbar() {
                     handleLogout();
                     setMobileOpen(false);
                   }}
-                  className="flex items-center justify-center gap-2 w-full py-4 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-95"
+                  className="flex items-center my-2 justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-95"
                   style={{
                     color: "#EF4444",
                     border: `1px solid rgba(239,68,68,0.3)`,
@@ -437,7 +438,7 @@ export function Navbar() {
             <Link
               href="/register/role"
               onClick={() => setMobileOpen(false)}
-              className="group flex items-center justify-center gap-2 w-full py-4 rounded-xl text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-95"
+              className="group flex items-center my-2 justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-white transition-all hover:scale-[1.02] active:scale-95"
               style={{
                 background: "linear-gradient(135deg, #4F9EFF, #7B5FFF, #C4B5FD)",
                 boxShadow: "0 4px 14px -2px rgba(123,95,255,0.5)",
@@ -446,9 +447,7 @@ export function Navbar() {
               Start selling
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
             </Link>
-            <div className="flex justify-center pt-2">
-              <ThemeSwitcher />
-            </div>
+           
           </div>
         </div>
       </div>

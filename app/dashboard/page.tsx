@@ -99,15 +99,37 @@ function ProductImage({
   );
 }
 
-function WishlistItemCard({ item, onRemove, onViewProduct }: any) {
+// ✅ Fixed WishlistItemCard – uses actual API fields
+function WishlistItemCard({
+  item,
+  onRemove,
+}: {
+  item: any;
+  onRemove: (productId: string) => void;
+}) {
+  const router = useRouter();
   const { textPrimary, textSecondary, accent } = useThemeColors();
   const product = item.product;
   const price = (product.price_in_cents / 100).toLocaleString();
+
+  // Real image from product.images array
+  const imageUrl =
+    product.images && product.images.length > 0
+      ? product.images[0].image_url
+      : null;
+
+  // Real seller name
+  const sellerName = product.seller?.shop_name || "Unknown Seller";
+
+  const handleViewProduct = () => {
+    router.push(`/products/${product.id}`);
+  };
+
   return (
     <AnimatedCard accentColor={accent}>
       <div className="p-5 space-y-4">
         <ProductImage
-          src={product.primary_image_url}
+          src={imageUrl}
           alt={product.name}
           className="w-full h-40 rounded-xl object-cover"
         />
@@ -129,15 +151,15 @@ function WishlistItemCard({ item, onRemove, onViewProduct }: any) {
           ₦{price}
         </p>
         <p className="text-sm" style={{ color: textSecondary }}>
-          Seller: {product.seller_shop_name}
+          Seller: {sellerName}
         </p>
         <div className="flex gap-2 pt-2">
           <button
-            onClick={() => onViewProduct(product.id, "")}
+            onClick={handleViewProduct}
             className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105"
             style={{ background: `${accent}15`, color: accent }}
           >
-            <MessageCircle size={14} /> Contact
+            <MessageCircle size={14} /> View
           </button>
           <button
             onClick={() => onRemove(product.id)}
@@ -195,7 +217,6 @@ export default function DashboardPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [userActionError, setUserActionError] = useState<string | null>(null);
-  const [contactProduct, setContactProduct] = useState<any>(null);
 
   const { ref: headerRef, inView: headerInView } = useInView(0.2);
 
@@ -207,6 +228,13 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!userLoading && !isAuthenticated) router.push("/login");
   }, [isAuthenticated, userLoading, router]);
+
+  // ✅ Buyer default tab
+  useEffect(() => {
+    if (isBuyer && activeTab !== "wishlist") {
+      setActiveTab("wishlist");
+    }
+  }, [isBuyer, activeTab]);
 
   // Master data fetcher
   useEffect(() => {
@@ -246,11 +274,11 @@ export default function DashboardPage() {
       dispatch(fetchMyProducts());
   }, [isSeller, myShop, activeTab, dispatch]);
 
-  // Fetch wishlist
+  // Fetch wishlist **for everyone** when the tab is active (admins included)
   useEffect(() => {
-    if (isAuthenticated && !isAdmin && activeTab === "wishlist")
+    if (isAuthenticated && activeTab === "wishlist")
       dispatch(fetchMyWishlist({ page: 1, limit: 100 }));
-  }, [isAuthenticated, isAdmin, activeTab, dispatch]);
+  }, [isAuthenticated, activeTab, dispatch]);
 
   // Admin data
   useEffect(() => {
@@ -331,8 +359,7 @@ export default function DashboardPage() {
     await dispatch(removeFromWishlistByProductId(id)).unwrap();
     dispatch(fetchMyWishlist({ page: 1, limit: 100 }));
   };
-  const handleContactProduct = (id: string, whatsapp?: string) =>
-    setContactProduct({ id, name: "", sellerWhatsApp: whatsapp });
+
   const getSellerRecord = (userId: string) =>
     adminSellers.find((s) => s.user_id === userId);
 
@@ -363,27 +390,31 @@ export default function DashboardPage() {
     (isSeller && (myShopLoading || sellerDashboardLoading)) ||
     (isSeller && !myShop && myShopLoading);
 
+  // Build tabs based on role
   let tabs: { id: TabType; label: string; icon: any }[] = [];
-  if (isAdmin)
+  if (isAdmin) {
     tabs = [
       { id: "overview", label: "Overview", icon: BarChart3 },
       { id: "users", label: "Users", icon: Users },
       { id: "allProducts", label: "All Products", icon: Grid },
       { id: "wishlist", label: "Wishlist", icon: Heart },
     ];
-  else if (isSeller && myShop)
+  } else if (isSeller && myShop) {
     tabs = [
       { id: "overview", label: "Overview", icon: BarChart3 },
       { id: "shop", label: "My Shop", icon: Building2 },
       { id: "wishlist", label: "Wishlist", icon: Heart },
     ];
-  else if (isBuyer) tabs = [{ id: "wishlist", label: "Wishlist", icon: Heart }];
+  } else if (isBuyer) {
+    tabs = [{ id: "wishlist", label: "Wishlist", icon: Heart }];
+  }
 
   return (
     <main
       className="relative min-h-screen py-16 md:py-24 overflow-hidden"
       style={{ background: bgSubtle }}
     >
+      {/* Floating orbs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
           className="orb-1"
@@ -450,8 +481,8 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Tabs */}
-        {tabs.length > 1 && (
+        {/* Tabs – show for any role with at least one tab */}
+        {tabs.length >= 1 && (
           <div
             className="flex justify-center gap-2 mb-10 border-b"
             style={{ borderColor: border }}
@@ -460,7 +491,9 @@ export default function DashboardPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 text-sm font-medium transition-all relative ${activeTab === tab.id ? "" : "opacity-60 hover:opacity-100"}`}
+                className={`px-6 py-3 text-sm font-medium transition-all relative ${
+                  activeTab === tab.id ? "" : "opacity-60 hover:opacity-100"
+                }`}
                 style={{ color: activeTab === tab.id ? accent : textSecondary }}
               >
                 <div className="flex items-center gap-2">
@@ -1247,63 +1280,38 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* ========== WISHLIST TAB ========== */}
+        {/* ========== WISHLIST TAB (ALL ROLES) ========== */}
         {activeTab === "wishlist" && (
           <div className="transition-all duration-700">
-            {isAdmin ? (
-              <AnimatedCard>
-                <div className="p-6 space-y-4">
-                  <h2
-                    className="text-xl font-semibold flex items-center gap-2"
-                    style={{ color: textPrimary }}
-                  >
-                    <Heart size={20} style={{ color: accent }} /> Wishlist
-                    Analytics
-                  </h2>
-                  <p className="text-sm" style={{ color: textSecondary }}>
-                    Admin wishlist overview will be implemented here.
-                  </p>
-                  <div className="p-4 bg-primary/5 rounded-xl">
-                    <p className="text-sm" style={{ color: textSecondary }}>
-                      Coming soon...
-                    </p>
-                  </div>
-                </div>
-              </AnimatedCard>
+            {wishlistLoading ? (
+              <TechLoader text="Loading your wishlist…" />
+            ) : wishlistItems.length === 0 ? (
+              <div className="text-center py-12">
+                <Heart
+                  size={48}
+                  className="mx-auto opacity-30"
+                  style={{ color: textSecondary }}
+                />
+                <p className="mt-4" style={{ color: textSecondary }}>
+                  Your wishlist is empty.
+                </p>
+                <Link
+                  href="/products"
+                  className="mt-4 inline-block px-6 py-2 rounded-lg bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white hover:shadow-md transition-all"
+                >
+                  Browse Products
+                </Link>
+              </div>
             ) : (
-              <>
-                {wishlistLoading ? (
-                  <TechLoader text="Loading your wishlist…" />
-                ) : wishlistItems.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Heart
-                      size={48}
-                      className="mx-auto opacity-30"
-                      style={{ color: textSecondary }}
-                    />
-                    <p className="mt-4" style={{ color: textSecondary }}>
-                      Your wishlist is empty.
-                    </p>
-                    <Link
-                      href="/products"
-                      className="mt-4 inline-block px-6 py-2 rounded-lg bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white hover:shadow-md transition-all"
-                    >
-                      Browse Products
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {wishlistItems.map((item) => (
-                      <WishlistItemCard
-                        key={item.id}
-                        item={item}
-                        onRemove={handleRemoveFromWishlist}
-                        onViewProduct={handleContactProduct}
-                      />
-                    ))}
-                  </div>
-                )}
-              </>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {wishlistItems.map((item) => (
+                  <WishlistItemCard
+                    key={item.id}
+                    item={item}
+                    onRemove={handleRemoveFromWishlist}
+                  />
+                ))}
+              </div>
             )}
           </div>
         )}
@@ -1368,14 +1376,8 @@ export default function DashboardPage() {
         confirmText="Delete Forever"
         isDanger
       />
-      {contactProduct && (
-        <ProductContactModal
-          productId={contactProduct.id}
-          productName={contactProduct.name}
-          sellerWhatsApp={contactProduct.sellerWhatsApp}
-          onClose={() => setContactProduct(null)}
-        />
-      )}
+
+      {/* Edit Shop Modal */}
       {myShop && (
         <EditShopModal
           isOpen={editShopModalOpen}

@@ -19,7 +19,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { clearError, login } from "../redux/slices/userSlice";
 import type { RootState } from "../redux/store";
 import type { User } from "@/app/types/user";
-import { TechLoader } from "../components/TechLoader"; // 👈 added
+import { TechLoader } from "../components/TechLoader";
 
 // ─────────────────────────────────────────────────────────────
 // Theme & scroll hooks (unchanged)
@@ -39,14 +39,14 @@ function useThemeColors() {
     border: isDark
       ? "rgba(255,255,255,0.08)"
       : isLattie
-      ? "rgba(0,0,0,0.06)"
-      : "rgba(0,0,0,0.06)",
+        ? "rgba(0,0,0,0.06)"
+        : "rgba(0,0,0,0.06)",
     accent: isDark ? "#7B5FFF" : isLattie ? "#A0998F" : "#4F9EFF",
     bgSurface: isDark
       ? "rgba(14,14,24,0.85)"
       : isLattie
-      ? "rgba(250,248,245,0.85)"
-      : "rgba(255,255,255,0.85)",
+        ? "rgba(250,248,245,0.85)"
+        : "rgba(255,255,255,0.85)",
     bgSubtle: isDark ? "#0F0F1A" : isLattie ? "#F4F2EE" : "#F8F9FF",
     error: "#EF4444",
     success: "#00B86E",
@@ -106,8 +106,8 @@ function AnimatedCard({
         boxShadow: hovered
           ? `0 20px 40px -12px ${finalAccent}40`
           : isDark
-          ? "0 2px 12px rgba(0,0,0,0.35)"
-          : "0 2px 12px rgba(0,0,0,0.05)",
+            ? "0 2px 12px rgba(0,0,0,0.35)"
+            : "0 2px 12px rgba(0,0,0,0.05)",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -131,11 +131,18 @@ function AnimatedCard({
       <div className="relative z-10">{children}</div>
       <style jsx>{`
         @keyframes slideBorder {
-          0% { background-position: 100% 0; }
-          100% { background-position: -100% 0; }
+          0% {
+            background-position: 100% 0;
+          }
+          100% {
+            background-position: -100% 0;
+          }
         }
         @media (prefers-reduced-motion: reduce) {
-          .moving-border { animation: none; opacity: 0; }
+          .moving-border {
+            animation: none;
+            opacity: 0;
+          }
         }
       `}</style>
     </div>
@@ -146,7 +153,7 @@ export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error: reduxError } = useAppSelector(
-    (state: RootState) => state.user
+    (state: RootState) => state.user,
   );
   const {
     textPrimary,
@@ -162,7 +169,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
-  const [redirecting, setRedirecting] = useState(false); // 👈 new
+  const [redirecting, setRedirecting] = useState(false);
   const { ref: cardRef, inView: cardInView } = useInView(0.2);
 
   const emailError =
@@ -193,9 +200,7 @@ export default function LoginPage() {
     const result = await dispatch(login({ email, password }));
     if (login.fulfilled.match(result)) {
       const user = result.payload as User;
-      setRedirecting(true); // 👈 show loader
-
-      // brief pause to let the loader appear
+      setRedirecting(true);
       setTimeout(() => {
         if (user.role === "SELLER" && !user.shopId) {
           router.push("/my-shop");
@@ -279,7 +284,6 @@ export default function LoginPage() {
         >
           <AnimatedCard accentColor={accent}>
             {redirecting ? (
-              /* 🔄 Redirecting state */
               <div className="p-10 flex flex-col items-center justify-center">
                 <TechLoader text="Setting up your session…" />
               </div>
@@ -307,7 +311,7 @@ export default function LoginPage() {
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Email field unchanged */}
+                    {/* Email */}
                     <div>
                       <label
                         htmlFor="email"
@@ -334,8 +338,8 @@ export default function LoginPage() {
                             borderColor: emailError
                               ? errorColor
                               : email && !emailError
-                              ? "#00B86E"
-                              : border,
+                                ? "#00B86E"
+                                : border,
                             color: textPrimary,
                           }}
                         />
@@ -345,12 +349,13 @@ export default function LoginPage() {
                           className="mt-2 text-sm flex items-center gap-1"
                           style={{ color: errorColor }}
                         >
-                          <AlertCircle size={14} /> Invalid email address
+                          <AlertCircle size={14} /> Please enter a valid email
+                          address
                         </p>
                       )}
                     </div>
 
-                    {/* Password field unchanged */}
+                    {/* Password */}
                     <div>
                       <label
                         htmlFor="password"
@@ -377,8 +382,8 @@ export default function LoginPage() {
                             borderColor: passwordError
                               ? errorColor
                               : password.length >= 8 && !passwordError
-                              ? "#00B86E"
-                              : border,
+                                ? "#00B86E"
+                                : border,
                             color: textPrimary,
                           }}
                         />
@@ -388,7 +393,11 @@ export default function LoginPage() {
                           className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors hover:text-primary"
                           style={{ color: textMuted }}
                         >
-                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          {showPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
                         </button>
                       </div>
                       {passwordError && (
@@ -396,7 +405,8 @@ export default function LoginPage() {
                           className="mt-2 text-sm flex items-center gap-1"
                           style={{ color: errorColor }}
                         >
-                          <AlertCircle size={14} /> At least 8 characters
+                          <AlertCircle size={14} /> Password must be at least 8
+                          characters
                         </p>
                       )}
                     </div>
@@ -461,35 +471,87 @@ export default function LoginPage() {
 
       <style jsx>{`
         .moving-gradient-line {
-          background: linear-gradient(90deg, transparent, #4f9eff, #7b5fff, #c4b5fd, #7b5fff, #4f9eff, transparent);
+          background: linear-gradient(
+            90deg,
+            transparent,
+            #4f9eff,
+            #7b5fff,
+            #c4b5fd,
+            #7b5fff,
+            #4f9eff,
+            transparent
+          );
           background-size: 200% 100%;
           animation: flowGradient 3s linear infinite;
           opacity: 0.6;
         }
         @keyframes flowGradient {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 200% 50%; }
+          0% {
+            background-position: 0% 50%;
+          }
+          100% {
+            background-position: 200% 50%;
+          }
         }
         @keyframes float1 {
-          0%,100% { transform: translate(0,0) scale(1); }
-          33% { transform: translate(30px,-30px) scale(1.05); }
-          66% { transform: translate(-20px,20px) scale(0.98); }
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -30px) scale(1.05);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.98);
+          }
         }
         @keyframes float2 {
-          0%,100% { transform: translate(0,0) scale(1); }
-          50% { transform: translate(-40px,25px) scale(1.04); }
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+          }
+          50% {
+            transform: translate(-40px, 25px) scale(1.04);
+          }
         }
-        .animate-float1 { animation: float1 25s ease-in-out infinite; }
-        .animate-float2 { animation: float2 30s ease-in-out infinite; }
+        .animate-float1 {
+          animation: float1 25s ease-in-out infinite;
+        }
+        .animate-float2 {
+          animation: float2 30s ease-in-out infinite;
+        }
         @keyframes shake {
-          0%,100% { transform: translateX(0); }
-          10%,30%,50%,70%,90% { transform: translateX(-3px); }
-          20%,40%,60%,80% { transform: translateX(3px); }
+          0%,
+          100% {
+            transform: translateX(0);
+          }
+          10%,
+          30%,
+          50%,
+          70%,
+          90% {
+            transform: translateX(-3px);
+          }
+          20%,
+          40%,
+          60%,
+          80% {
+            transform: translateX(3px);
+          }
         }
-        .animate-shake { animation: shake 0.5s ease-in-out; }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
         @media (prefers-reduced-motion: reduce) {
-          .moving-gradient-line, .animate-float1, .animate-float2, .animate-shake { animation: none; }
-          .moving-gradient-line { background: linear-gradient(90deg, #4f9eff, #7b5fff, #c4b5fd); }
+          .moving-gradient-line,
+          .animate-float1,
+          .animate-float2,
+          .animate-shake {
+            animation: none;
+          }
+          .moving-gradient-line {
+            background: linear-gradient(90deg, #4f9eff, #7b5fff, #c4b5fd);
+          }
         }
       `}</style>
     </main>

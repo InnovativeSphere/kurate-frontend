@@ -22,7 +22,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { register, clearError } from '../redux/slices/userSlice';
 import type { RootState } from '../redux/store';
-import type { User } from '@/app/types/user'; // 👈 added
+import type { User } from '@/app/types/user';
 
 // ─────────────────────────────────────────────────────────────
 // Theme & scroll hooks (reused)
@@ -42,14 +42,14 @@ function useThemeColors() {
     border: isDark
       ? 'rgba(255,255,255,0.08)'
       : isLattie
-      ? 'rgba(0,0,0,0.06)'
-      : 'rgba(0,0,0,0.06)',
+        ? 'rgba(0,0,0,0.06)'
+        : 'rgba(0,0,0,0.06)',
     accent: isDark ? '#7B5FFF' : isLattie ? '#A0998F' : '#4F9EFF',
     bgSurface: isDark
       ? 'rgba(14,14,24,0.85)'
       : isLattie
-      ? 'rgba(250,248,245,0.85)'
-      : 'rgba(255,255,255,0.85)',
+        ? 'rgba(250,248,245,0.85)'
+        : 'rgba(255,255,255,0.85)',
     bgSubtle: isDark ? '#0F0F1A' : isLattie ? '#F4F2EE' : '#F8F9FF',
     error: '#EF4444',
     success: '#00B86E',
@@ -105,10 +105,10 @@ function AnimatedCard({
         boxShadow: isActive
           ? `0 30px 60px -20px ${finalAccent}, 0 0 0 1px ${finalAccent}30`
           : hovered
-          ? `0 20px 40px -12px ${finalAccent}40`
-          : isDark
-          ? '0 2px 12px rgba(0,0,0,0.35)'
-          : '0 2px 12px rgba(0,0,0,0.05)',
+            ? `0 20px 40px -12px ${finalAccent}40`
+            : isDark
+              ? '0 2px 12px rgba(0,0,0,0.35)'
+              : '0 2px 12px rgba(0,0,0,0.05)',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -165,17 +165,17 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false);
   const { ref: cardRef, inView: cardInView } = useInView(0.2);
 
+  // ✅ Improved validation with clearer messages
   const emailError = email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const passwordError = password.length > 0 && password.length < 8;
   const confirmPasswordError = confirmPassword.length > 0 && password !== confirmPassword;
-  const phoneError = phone.length > 0 && !/^\+?[0-9]{10,15}$/.test(phone);
+  // Require phone number with country code (starts with +, then digits)
+  const phoneError = phone.length > 0 && !/^\+\d{7,15}$/.test(phone);
 
   useEffect(() => {
     if (reduxError) dispatch(clearError());
     setLocalError(null);
   }, [email, password, phone, confirmPassword, reduxError, dispatch]);
-
-  // ❌ Removed the faulty useEffect that pushed to /dashboard
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -197,22 +197,20 @@ export default function RegisterPage() {
       return;
     }
     if (phoneError) {
-      setLocalError('Enter a valid phone number (digits only, optional +).');
+      setLocalError('Phone number must include the country code (e.g., +2348012345678).');
       return;
     }
 
     const result = await dispatch(register({ email, password, phone, role }));
     if (register.fulfilled.match(result)) {
-      const user = result.payload as User; // now contains shopId (null for new sellers)
+      const user = result.payload as User;
       setSuccess(true);
-      // ✅ Route based on role and shop existence
       if (user.role === 'SELLER' && !user.shopId) {
         router.push('/my-shop');
       } else {
         router.push('/dashboard');
       }
     }
-    // If rejected, error handled by Redux
   };
 
   const displayError = localError || reduxError;
@@ -292,6 +290,7 @@ export default function RegisterPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Email */}
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: textPrimary }}>Email *</label>
                   <div className="relative group/input">
@@ -313,11 +312,12 @@ export default function RegisterPage() {
                   </div>
                   {emailError && (
                     <p className="mt-1 text-xs flex items-center gap-1" style={{ color: errorColor }}>
-                      <AlertCircle size={10} /> Invalid email
+                      <AlertCircle size={10} /> Please enter a valid email address
                     </p>
                   )}
                 </div>
 
+                {/* Phone */}
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: textPrimary }}>Phone number *</label>
                   <div className="relative group/input">
@@ -339,11 +339,12 @@ export default function RegisterPage() {
                   </div>
                   {phoneError && (
                     <p className="mt-1 text-xs flex items-center gap-1" style={{ color: errorColor }}>
-                      <AlertCircle size={10} /> Invalid phone number
+                      <AlertCircle size={10} /> Include country code (e.g., +2348012345678)
                     </p>
                   )}
                 </div>
 
+                {/* Password */}
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: textPrimary }}>Password *</label>
                   <div className="relative group/input">
@@ -378,6 +379,7 @@ export default function RegisterPage() {
                   )}
                 </div>
 
+                {/* Confirm Password */}
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: textPrimary }}>Confirm password *</label>
                   <div className="relative group/input">

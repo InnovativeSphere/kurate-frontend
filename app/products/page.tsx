@@ -27,8 +27,8 @@ import {
   Eye,
 } from "lucide-react";
 import { AnimatedCard } from "../components/AnimatedCard";
-import { TechLoader } from "../components/TechLoader"; // 👈 added
-import { AuthRequiredModal } from "../components/AuthRequiredModal"; // 👈 added
+import { TechLoader } from "../components/TechLoader";
+import { AuthRequiredModal } from "../components/AuthRequiredModal";
 import { Product, ProductImage } from "../types/product";
 
 /* ─── Image Slider (public, with broken‑image fallback) ─────── */
@@ -209,7 +209,7 @@ export default function ProductsPage() {
   );
   const { categories } = useAppSelector((state: RootState) => state.category);
   const { sellers } = useAppSelector((state: RootState) => state.seller);
-  const { isAuthenticated } = useAppSelector((state: RootState) => state.user); // 👈 for auth guard
+  const { isAuthenticated } = useAppSelector((state: RootState) => state.user);
   const { textPrimary, textSecondary, textMuted, border, accent, bgSubtle } =
     useThemeColors();
   const { ref: headerRef, inView: headerInView } = useInView(0.2);
@@ -220,7 +220,7 @@ export default function ProductsPage() {
   const [minPrice, setMinPrice] = useState<number | "">("");
   const [maxPrice, setMaxPrice] = useState<number | "">("");
   const [showFilters, setShowFilters] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false); // 👈 auth modal state
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   // Fetch categories and sellers once
   useEffect(() => {
@@ -275,7 +275,7 @@ export default function ProductsPage() {
 
   const handleToggleWishlist = async (productId: string) => {
     if (!isAuthenticated) {
-      setAuthModalOpen(true); // 👈 show login modal
+      setAuthModalOpen(true);
       return;
     }
     if (wishlistedProductIds.has(productId)) {
@@ -304,7 +304,7 @@ export default function ProductsPage() {
 
   return (
     <main
-      className="relative min-h-screen py-16 md:py-24 overflow-hidden"
+      className="relative min-h-screen py-10 md:py-14 overflow-hidden"
       style={{ background: bgSubtle }}
     >
       {/* Floating orbs */}
@@ -344,7 +344,7 @@ export default function ProductsPage() {
 
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Back button */}
-        <div className="mb-8 transition-all duration-700">
+        <div className="mb-4 transition-all duration-700">
           <button
             onClick={handleBack}
             className="inline-flex items-center gap-2 text-sm font-medium transition-all group opacity-70 hover:opacity-100"
@@ -363,7 +363,7 @@ export default function ProductsPage() {
         {/* Header */}
         <div
           ref={headerRef}
-          className="text-center mb-12 transition-all duration-700"
+          className="text-center mb-6 transition-all duration-700"
           style={{
             opacity: headerInView ? 1 : 0,
             transform: headerInView ? "translateY(0)" : "translateY(20px)",
@@ -389,7 +389,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Search & Filters */}
-        <div className="max-w-4xl mx-auto mb-10 space-y-4">
+        <div className="max-w-4xl mx-auto mb-8 space-y-4">
           <div className="flex items-center gap-3">
             <div className="relative flex-1">
               <Search
@@ -542,7 +542,7 @@ export default function ProductsPage() {
         )}
 
         {/* Moving gradient */}
-        <div className="relative w-full h-px overflow-hidden mt-16">
+        <div className="relative w-full h-px overflow-hidden mt-12">
           <div className="moving-gradient-line absolute inset-0" />
         </div>
       </div>
