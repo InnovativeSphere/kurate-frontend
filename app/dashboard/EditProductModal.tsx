@@ -45,11 +45,12 @@ export function EditProductModal({
     border,
     accent,
     bgSurface,
-    bgSubtle,                          // 👈 added for solid select background
+    bgSubtle,
     success: successColor,
   } = useThemeColors();
 
   const [formData, setFormData] = useState<UpdateProductDto>({});
+  const [priceNaira, setPriceNaira] = useState<number | "">("");   // 👈 separate naira state
   const [existingImages, setExistingImages] = useState<Product["images"]>([]);
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
   const [newImageEntries, setNewImageEntries] = useState<
@@ -70,11 +71,11 @@ export function EditProductModal({
       setFormData({
         name: product.name,
         description: product.description ?? "",
-        price_in_cents: product.price_in_cents,
         condition: product.condition,
         stock_status: product.stock_status,
         specs: product.specs,
       });
+      setPriceNaira(product.price_in_cents / 100);   // 👈 cents → naira
       setExistingImages(product.images ?? []);
       setDeletedImageIds([]);
       setNewImageEntries([]);
@@ -157,10 +158,17 @@ export function EditProductModal({
 
     setSaving(true);
     setSubmitError(null);
+
+    // 👇 Build the DTO — no unknown fields
+    const dataToSend: UpdateProductDto = {
+      ...formData,
+      price_in_cents: priceNaira !== "" ? Math.round(priceNaira * 100) : undefined,
+    };
+
     try {
       // 1. Update text fields
       await dispatch(
-        updateProduct({ id: product.id, data: formData }),
+        updateProduct({ id: product.id, data: dataToSend }),
       ).unwrap();
 
       // 2. Delete marked images
@@ -268,21 +276,22 @@ export function EditProductModal({
                     style={{ borderColor: border, color: textPrimary }}
                   />
                 </div>
+                {/* ✅ Price in Naira */}
                 <div>
                   <label
                     className="block text-sm font-medium mb-2"
                     style={{ color: textSecondary }}
                   >
-                    Price (in cents)
+                    Price (₦)
                   </label>
                   <input
                     type="number"
-                    value={formData.price_in_cents ?? ""}
+                    step="any"
+                    value={priceNaira}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        price_in_cents: parseInt(e.target.value) || 0,
-                      })
+                      setPriceNaira(
+                        e.target.value === "" ? "" : parseFloat(e.target.value),
+                      )
                     }
                     className="w-full px-4 py-3 rounded-xl border bg-surface text-sm focus:ring-2 focus:ring-primary/20"
                     style={{ borderColor: border, color: textPrimary }}
@@ -307,7 +316,7 @@ export function EditProductModal({
                     style={{
                       borderColor: border,
                       color: textPrimary,
-                      background: bgSubtle,   // 👈 solid background
+                      background: bgSubtle,
                     }}
                   >
                     <option value="NEW">New</option>
@@ -334,7 +343,7 @@ export function EditProductModal({
                     style={{
                       borderColor: border,
                       color: textPrimary,
-                      background: bgSubtle,   // 👈 solid background
+                      background: bgSubtle,
                     }}
                   >
                     <option value="IN_STOCK">In Stock</option>

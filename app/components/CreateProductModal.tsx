@@ -10,18 +10,20 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { createProduct } from "../redux/slices/productSlice";
 import { fetchCategories } from "../redux/slices/categorySlice";
 import { useThemeColors } from "../hooks/useThemeColors";
+import { TechLoader } from "../components/TechLoader";
 import type { ProductImageFile } from "../types/product";
 
 const productSchema = z.object({
   name: z.string().min(2).max(200),
   description: z.string().max(2000).optional(),
-  price_in_cents: z.number().min(1, "Price must be greater than 0"),
+  price_in_naira: z
+    .number({ error: "Price must be a number" })
+    .min(1, "Price must be greater than 0"),
   condition: z.enum(["NEW", "USED", "REFURBISHED"]),
   stock_status: z.enum(["IN_STOCK", "OUT_OF_STOCK", "LIMITED"]).optional(),
   specs: z.record(z.string(), z.any()).optional(),
   category_id: z.string().uuid("Select a category"),
 });
-
 type ProductFormData = z.infer<typeof productSchema>;
 
 interface ImageEntry {
@@ -45,7 +47,7 @@ export function CreateProductModal({
 }: CreateProductModalProps) {
   const dispatch = useAppDispatch();
   const { categories } = useAppSelector((state: any) => state.category);
-  const { loading } = useAppSelector((state: any) => state.product);
+  const { loading: creating } = useAppSelector((state: any) => state.product);
   const {
     textPrimary,
     textSecondary,
@@ -53,7 +55,7 @@ export function CreateProductModal({
     border,
     accent,
     bgSurface,
-    bgSubtle,                          // 👈 added for solid select background
+    bgSubtle,
     success: successColor,
   } = useThemeColors();
 
@@ -209,11 +211,14 @@ export function CreateProductModal({
       parsedSpecs = specsString ? JSON.parse(specsString) : {};
     } catch {}
 
+    // ✅ Convert Naira to cents
+    const priceInCents = Math.round(data.price_in_naira * 100);
+
     const payload = {
       data: {
         name: data.name,
         description: data.description || "",
-        price_in_cents: data.price_in_cents,
+        price_in_cents: priceInCents,        // 👈 sent in cents
         condition: data.condition,
         stock_status: data.stock_status,
         specs: parsedSpecs,
@@ -247,7 +252,7 @@ export function CreateProductModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={success ? undefined : closeModal}
+        onClick={success || creating ? undefined : closeModal}
       />
       <div
         className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl animate-scale-up"
@@ -285,6 +290,10 @@ export function CreateProductModal({
               Closing in 2 seconds...
             </p>
           </div>
+        ) : creating ? (
+          <div className="p-12 flex flex-col items-center justify-center">
+            <TechLoader text="Creating product..." />
+          </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-7">
             {/* Basic Information */}
@@ -318,26 +327,28 @@ export function CreateProductModal({
                     </p>
                   )}
                 </div>
+                {/* ✅ Price in Naira */}
                 <div>
                   <label
                     className="block text-sm font-medium mb-2"
                     style={{ color: textSecondary }}
                   >
-                    Price (in cents) *
+                    Price (₦) *
                   </label>
                   <input
                     type="number"
-                    {...register("price_in_cents", { valueAsNumber: true })}
+                    step="any"
+                    {...register("price_in_naira", { valueAsNumber: true })}
                     className="w-full px-4 py-3 rounded-xl border bg-surface text-sm focus:ring-2 focus:ring-primary/20 transition"
                     style={{
-                      borderColor: errors.price_in_cents ? "#EF4444" : border,
+                      borderColor: errors.price_in_naira ? "#EF4444" : border,
                       color: textPrimary,
                     }}
-                    placeholder="e.g., 450000"
+                    placeholder="e.g., 4500"
                   />
-                  {errors.price_in_cents && (
+                  {errors.price_in_naira && (
                     <p className="text-xs text-red-500 mt-1">
-                      {errors.price_in_cents.message}
+                      {errors.price_in_naira.message}
                     </p>
                   )}
                 </div>
@@ -354,7 +365,7 @@ export function CreateProductModal({
                     style={{
                       borderColor: border,
                       color: textPrimary,
-                      background: bgSubtle,   // 👈 solid background
+                      background: bgSubtle,
                     }}
                   >
                     <option value="NEW">New</option>
@@ -375,7 +386,7 @@ export function CreateProductModal({
                     style={{
                       borderColor: border,
                       color: textPrimary,
-                      background: bgSubtle,   // 👈 solid background
+                      background: bgSubtle,
                     }}
                   >
                     <option value="IN_STOCK">In Stock</option>
@@ -423,7 +434,7 @@ export function CreateProductModal({
                     style={{
                       borderColor: errors.category_id ? "#EF4444" : border,
                       color: textPrimary,
-                      background: bgSubtle,   // 👈 solid background
+                      background: bgSubtle,
                     }}
                   >
                     <option value="">Select category</option>
@@ -614,10 +625,10 @@ export function CreateProductModal({
               </button>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={creating}
                 className="px-6 py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white hover:shadow-md transition-all disabled:opacity-50"
               >
-                {loading ? "Creating..." : "Create Product"}
+                {creating ? "Creating..." : "Create Product"}
               </button>
             </div>
           </form>
