@@ -45,6 +45,7 @@ export function EditProductModal({
     border,
     accent,
     bgSurface,
+    bgSubtle,                          // 👈 added for solid select background
     success: successColor,
   } = useThemeColors();
 
@@ -236,7 +237,6 @@ export function EditProductModal({
             </p>
           </div>
         ) : saving ? (
-          /* Saving overlay with TechLoader */
           <div className="p-12 flex flex-col items-center justify-center">
             <TechLoader text="Saving changes..." />
           </div>
@@ -303,8 +303,12 @@ export function EditProductModal({
                         condition: e.target.value as any,
                       })
                     }
-                    className="w-full px-4 py-3 rounded-xl border bg-surface text-sm focus:ring-2 focus:ring-primary/20"
-                    style={{ borderColor: border, color: textPrimary }}
+                    className="w-full px-4 py-3 rounded-xl border text-sm focus:ring-2 focus:ring-primary/20"
+                    style={{
+                      borderColor: border,
+                      color: textPrimary,
+                      background: bgSubtle,   // 👈 solid background
+                    }}
                   >
                     <option value="NEW">New</option>
                     <option value="USED">Used</option>
@@ -326,8 +330,12 @@ export function EditProductModal({
                         stock_status: e.target.value as any,
                       })
                     }
-                    className="w-full px-4 py-3 rounded-xl border bg-surface text-sm focus:ring-2 focus:ring-primary/20"
-                    style={{ borderColor: border, color: textPrimary }}
+                    className="w-full px-4 py-3 rounded-xl border text-sm focus:ring-2 focus:ring-primary/20"
+                    style={{
+                      borderColor: border,
+                      color: textPrimary,
+                      background: bgSubtle,   // 👈 solid background
+                    }}
                   >
                     <option value="IN_STOCK">In Stock</option>
                     <option value="OUT_OF_STOCK">Out of Stock</option>
@@ -548,7 +556,12 @@ export function EditProductModal({
           </form>
         )}
       </div>
+      {/* Dropdown options styling */}
       <style jsx>{`
+        select option {
+          background: ${bgSubtle};
+          color: ${textPrimary};
+        }
         .animate-fade-in {
           animation: fadeIn 0.2s ease-out forwards;
         }

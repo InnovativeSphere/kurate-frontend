@@ -1,7 +1,7 @@
 // app/products/page.tsx
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { RootState } from "../redux/store";
@@ -222,6 +222,9 @@ export default function ProductsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
+  // Debounce timer for price changes
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
   // Fetch categories and sellers once
   useEffect(() => {
     if (categories.length === 0) {
@@ -230,7 +233,7 @@ export default function ProductsPage() {
     dispatch(fetchActiveSellers({ page: 1, limit: 1000 }));
   }, [dispatch, categories.length]);
 
-  // Fetch products on mount and when filters change
+  // The actual fetch function
   const loadProducts = useCallback(() => {
     dispatch(
       fetchProducts({
@@ -245,9 +248,24 @@ export default function ProductsPage() {
     );
   }, [dispatch, search, categoryId, condition, minPrice, maxPrice]);
 
+  // Debounce price inputs, otherwise fetch immediately
   useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    if (minPrice !== "" || maxPrice !== "") {
+      debounceTimer.current = setTimeout(() => {
+        loadProducts();
+      }, 500);
+    } else {
+      loadProducts();
+    }
+
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
+  }, [categoryId, condition, search, minPrice, maxPrice, loadProducts]);
 
   // Fetch wishlist only when authenticated
   useEffect(() => {
@@ -430,8 +448,12 @@ export default function ProductsPage() {
                 <select
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  className="px-3 py-2 rounded-lg border bg-surface text-sm"
-                  style={{ borderColor: border, color: textPrimary }}
+                  className="px-3 py-2 rounded-lg border text-sm"
+                  style={{
+                    borderColor: border,
+                    color: textPrimary,
+                    background: bgSubtle,
+                  }}
                 >
                   <option value="">All Categories</option>
                   {categories.map((cat: any) => (
@@ -451,8 +473,12 @@ export default function ProductsPage() {
                 <select
                   value={condition}
                   onChange={(e) => setCondition(e.target.value)}
-                  className="px-3 py-2 rounded-lg border bg-surface text-sm"
-                  style={{ borderColor: border, color: textPrimary }}
+                  className="px-3 py-2 rounded-lg border text-sm"
+                  style={{
+                    borderColor: border,
+                    color: textPrimary,
+                    background: bgSubtle,
+                  }}
                 >
                   <option value="">All</option>
                   <option value="NEW">New</option>
@@ -552,6 +578,14 @@ export default function ProductsPage() {
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
       />
+
+      {/* Dropdown readability */}
+      <style jsx>{`
+        select option {
+          background: ${bgSubtle};
+          color: ${textPrimary};
+        }
+      `}</style>
 
       {/* Global animations */}
       <style jsx global>{`

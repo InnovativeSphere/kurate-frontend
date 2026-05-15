@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { createProduct } from "../redux/slices/productSlice";
 import { fetchCategories } from "../redux/slices/categorySlice";
 import { useThemeColors } from "../hooks/useThemeColors";
-import type { ProductImageFile } from "../types/product"; // make sure this exists
+import type { ProductImageFile } from "../types/product";
 
 const productSchema = z.object({
   name: z.string().min(2).max(200),
@@ -25,7 +25,7 @@ const productSchema = z.object({
 type ProductFormData = z.infer<typeof productSchema>;
 
 interface ImageEntry {
-  id: string; // random key
+  id: string;
   file: File | null;
   url: string;
   alt_text: string;
@@ -53,6 +53,7 @@ export function CreateProductModal({
     border,
     accent,
     bgSurface,
+    bgSubtle,                          // 👈 added for solid select background
     success: successColor,
   } = useThemeColors();
 
@@ -84,14 +85,12 @@ export function CreateProductModal({
     },
   });
 
-  // Fetch categories on open
   useEffect(() => {
     if (isOpen && categories.length === 0) {
       dispatch(fetchCategories({ page: 1, limit: 100 }));
     }
   }, [isOpen, categories.length, dispatch]);
 
-  // Reset entire form on open/close
   const closeModal = () => {
     reset();
     setSpecsString("");
@@ -113,7 +112,6 @@ export function CreateProductModal({
     if (!isOpen) closeModal();
   }, [isOpen]);
 
-  // Manage image entries
   const addImageEntry = () => {
     setImageEntries((prev) => [
       ...prev,
@@ -162,7 +160,6 @@ export function CreateProductModal({
   const onSubmit = async (data: ProductFormData) => {
     setSubmitError(null);
 
-    // Validate at least one image source
     const hasFile = imageEntries.some((e) => e.file);
     const hasUrl = imageEntries.some((e) => e.url.trim() !== "");
     if (!hasFile && !hasUrl) {
@@ -170,10 +167,8 @@ export function CreateProductModal({
       return;
     }
 
-    // Build files and metadata for file-based images
     const fileImages: File[] = [];
     const fileMetadata: Omit<ProductImageFile, "file">[] = [];
-    // Build direct URL images (for data.images)
     const urlImages: {
       image_url: string;
       alt_text?: string;
@@ -209,7 +204,6 @@ export function CreateProductModal({
       return;
     }
 
-    // Parse specs
     let parsedSpecs = {};
     try {
       parsedSpecs = specsString ? JSON.parse(specsString) : {};
@@ -224,7 +218,7 @@ export function CreateProductModal({
         stock_status: data.stock_status,
         specs: parsedSpecs,
         category_id: data.category_id,
-        images: urlImages, // direct URLs
+        images: urlImages,
       },
       imageFiles: fileImages,
       imageMetadata: fileMetadata,
@@ -356,8 +350,12 @@ export function CreateProductModal({
                   </label>
                   <select
                     {...register("condition")}
-                    className="w-full px-4 py-3 rounded-xl border bg-surface text-sm focus:ring-2 focus:ring-primary/20 transition"
-                    style={{ borderColor: border, color: textPrimary }}
+                    className="w-full px-4 py-3 rounded-xl border text-sm focus:ring-2 focus:ring-primary/20 transition"
+                    style={{
+                      borderColor: border,
+                      color: textPrimary,
+                      background: bgSubtle,   // 👈 solid background
+                    }}
                   >
                     <option value="NEW">New</option>
                     <option value="USED">Used</option>
@@ -373,8 +371,12 @@ export function CreateProductModal({
                   </label>
                   <select
                     {...register("stock_status")}
-                    className="w-full px-4 py-3 rounded-xl border bg-surface text-sm focus:ring-2 focus:ring-primary/20 transition"
-                    style={{ borderColor: border, color: textPrimary }}
+                    className="w-full px-4 py-3 rounded-xl border text-sm focus:ring-2 focus:ring-primary/20 transition"
+                    style={{
+                      borderColor: border,
+                      color: textPrimary,
+                      background: bgSubtle,   // 👈 solid background
+                    }}
                   >
                     <option value="IN_STOCK">In Stock</option>
                     <option value="OUT_OF_STOCK">Out of Stock</option>
@@ -417,10 +419,11 @@ export function CreateProductModal({
                   </label>
                   <select
                     {...register("category_id")}
-                    className="w-full px-4 py-3 rounded-xl border bg-surface text-sm focus:ring-2 focus:ring-primary/20 transition"
+                    className="w-full px-4 py-3 rounded-xl border text-sm focus:ring-2 focus:ring-primary/20 transition"
                     style={{
                       borderColor: errors.category_id ? "#EF4444" : border,
                       color: textPrimary,
+                      background: bgSubtle,   // 👈 solid background
                     }}
                   >
                     <option value="">Select category</option>
@@ -621,7 +624,12 @@ export function CreateProductModal({
         )}
       </div>
 
+      {/* Dropdown options styling */}
       <style jsx>{`
+        select option {
+          background: ${bgSubtle};
+          color: ${textPrimary};
+        }
         .animate-fade-in {
           animation: fadeIn 0.2s ease-out forwards;
         }
@@ -629,22 +637,12 @@ export function CreateProductModal({
           animation: scaleUp 0.25s cubic-bezier(0.21, 1.11, 0.35, 1.1) forwards;
         }
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
         @keyframes scaleUp {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
         }
       `}</style>
     </div>
