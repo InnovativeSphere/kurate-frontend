@@ -3,7 +3,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 // ─── Create axios instance ────────────────────────────────
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://kurate-backend.onrender.com",
   withCredentials: true, // sends httpOnly cookies automatically
   headers: {
     "Content-Type": "application/json",

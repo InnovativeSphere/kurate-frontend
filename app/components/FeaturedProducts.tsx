@@ -85,8 +85,7 @@ function ProductCard({
 
   return (
     <div
-      className="shrink-0"
-      style={{ width: 380, transition: "all 0.3s ease" }}
+      className="shrink-0 w-full"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -115,10 +114,10 @@ function ProductCard({
           transition: "all 0.4s cubic-bezier(0.22,1,0.36,1)",
         }}
       >
-        {/* Image area */}
+        {/* Image area – slightly shorter on mobile */}
         <div
           className="relative overflow-hidden"
-          style={{ height: 240, flexShrink: 0 }}
+          style={{ height: 'clamp(180px, 40vw, 240px)', flexShrink: 0 }}
         >
           {primaryImage && !imgError ? (
             <img
@@ -203,16 +202,16 @@ function ProductCard({
           </button>
         </div>
 
-        {/* Content */}
-        <div className="flex flex-col flex-1 p-5">
+        {/* Content – smaller paddings on mobile */}
+        <div className="flex flex-col flex-1 p-3 sm:p-5">
           <h3
-            className="font-display font-bold text-xl mb-2"
+            className="font-display font-bold text-lg sm:text-xl mb-2"
             style={{ color: "var(--color-text-primary)" }}
           >
             {product.name}
           </h3>
           <p
-            className="text-sm mb-4"
+            className="text-xs sm:text-sm mb-4"
             style={{ color: "var(--color-text-muted)" }}
           >
             {product.specs
@@ -231,7 +230,7 @@ function ProductCard({
           <div className="flex items-center justify-between mt-auto">
             <div>
               <p
-                className="font-display font-black text-2xl"
+                className="font-display font-black text-xl sm:text-2xl"
                 style={{ color: "var(--color-text-primary)" }}
               >
                 ₦{price}
@@ -410,12 +409,42 @@ export function FeaturedProducts() {
   const handleViewProduct = (id: string) => router.push(`/products/${id}`);
 
   const accentColors = ["#4F9EFF", "#7B5FFF", "#C4B5FD"];
-  const cardWidth = 380 + 24;
-  const offset = needCarousel ? -currentIndex * cardWidth : 0;
+
+  // Card width: mobile full-width, md+ fixed 380px
+  const cardWidth = "clamp(0px, 100vw - 2rem, 380px)"; // on mobile takes nearly full width, on desktop fixed 380px
+  const gap = 24;
+  // Compute offset in pixels using a dynamic measurement trick? We'll keep using CSS transforms with percentage?
+  // We'll calculate offset using the current card width. Since it varies, we can set transform to -index * 100% for mobile (single card view) and for desktop use pixel offset.
+  // Simplest: use CSS variable for card width, or just use percentage translation for mobile and pixel for desktop.
+  // We'll conditionally set the translateX value: on mobile (window width < 640px), translateX = -currentIndex * 100% (one card per view). On desktop, -currentIndex * (380+24)px.
+  // Since we're using inline styles, we can compute via a media query hook? Better: use a ref to measure card width, but to avoid complexity, we'll use a CSS approach:
+  // Wrap the cards container with a flex that has `overflow-hidden` and each card has `flex: 0 0 calc(100vw - 2rem)` on mobile and `flex: 0 0 380px` on desktop.
+  // Then set `transform: translateX(calc(-{currentIndex} * (100vw - 2rem)))` on mobile and `translateX(calc(-{currentIndex} * (380px + 24px)))` on desktop.
+  // We can achieve this by using CSS custom properties and media queries or by dynamically setting style with a state that tracks if mobile.
+  // Since this is a client component, we can detect mobile via window.innerWidth and update state on resize. But that adds complexity.
+  // Alternatively, we can just show a single card on mobile (not centered) and allow the carousel to slide one card at a time by translating the full width of the visible area.
+  // We'll set the container to `display: flex;` and each card to `flex: 0 0 100%` on mobile (sm breakpoint), and `flex: 0 0 calc(33.333% - 16px)` on desktop. Then we can translate by -currentIndex * 100% on mobile and by -currentIndex * (33.333% + gap/2?) hmm.
+  // Actually the easiest: keep the same logic but use `translateX(-${currentIndex * cardWidth}px)` where `cardWidth` is computed dynamically. We'll use a ref on the card container to measure its width after mount, and use that width to set the offset.
+  // To avoid perf issues, we'll measure the first card width in a useEffect and store it in state. Since card width changes on resize, we'll also listen to resize. I'll implement that.
+
+  const [cardMeasuredWidth, setCardMeasuredWidth] = useState(380);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (cardRef.current) {
+        setCardMeasuredWidth(cardRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  const offset = needCarousel ? -currentIndex * (cardMeasuredWidth + gap) : 0;
 
   const { ref: headRef, inView: headInView } = useInView(0.2);
 
-  // ── NO EARLY RETURN – the component always renders the outer section ──
   return (
     <>
       <section
@@ -470,7 +499,7 @@ export function FeaturedProducts() {
         </div>
 
         <div style={{ position: "relative", zIndex: 10 }}>
-          {/* Header */}
+          {/* Header – centered */}
           <div
             ref={headRef}
             style={{
@@ -587,12 +616,12 @@ export function FeaturedProducts() {
                     onClick={goPrev}
                     style={{
                       position: "absolute",
-                      left: "1rem",
+                      left: "0.5rem",
                       top: "50%",
                       transform: "translateY(-50%)",
                       zIndex: 20,
-                      width: 48,
-                      height: 48,
+                      width: 40,
+                      height: 40,
                       borderRadius: "50%",
                       background: isDark
                         ? "rgba(20,20,30,0.9)"
@@ -607,18 +636,18 @@ export function FeaturedProducts() {
                       color: "var(--color-text-primary)",
                     }}
                   >
-                    <ChevronLeft size={24} />
+                    <ChevronLeft size={20} />
                   </button>
                   <button
                     onClick={goNext}
                     style={{
                       position: "absolute",
-                      right: "1rem",
+                      right: "0.5rem",
                       top: "50%",
                       transform: "translateY(-50%)",
                       zIndex: 20,
-                      width: 48,
-                      height: 48,
+                      width: 40,
+                      height: 40,
                       borderRadius: "50%",
                       background: isDark
                         ? "rgba(20,20,30,0.9)"
@@ -633,18 +662,17 @@ export function FeaturedProducts() {
                       color: "var(--color-text-primary)",
                     }}
                   >
-                    <ChevronRight size={24} />
+                    <ChevronRight size={20} />
                   </button>
                 </>
               )}
+              {/* Carousel track */}
               <div style={{ overflow: "hidden", padding: "0.5rem 0" }}>
                 <div
                   style={{
                     display: "flex",
-                    gap: 24,
-                    transform: needCarousel
-                      ? `translateX(${offset}px)`
-                      : "none",
+                    gap: `${gap}px`,
+                    transform: `translateX(${offset}px)`,
                     transition: isTransitioning
                       ? "transform 0.4s cubic-bezier(0.22,1,0.36,1)"
                       : "none",
@@ -660,7 +688,9 @@ export function FeaturedProducts() {
                       return (
                         <div
                           key={`${product.id}-${idx}`}
-                          style={{ flexShrink: 0, width: 380 }}
+                          ref={idx === 0 ? cardRef : undefined} // measure first card
+                          className="flex-shrink-0 w-[calc(100vw-2rem)] sm:w-[380px]"
+                          style={{ width: 'calc(100vw - 2rem)' }} // mobile full width, will be overridden by sm:w
                         >
                           <ProductCard
                             product={product}

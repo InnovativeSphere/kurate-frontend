@@ -1,3 +1,4 @@
+// components/Hero.tsx
 'use client';
 
 import { useTheme } from '@/app/lib/theme';
@@ -115,9 +116,13 @@ export function Hero() {
         {/* Responsive flex: column on mobile, row on desktop */}
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
           {/* Left column */}
-          <div style={{ flex: '1', maxWidth: '560px', width: '100%' }}>
-            {/* Badge */}
+          <div
+            className="flex flex-col items-center lg:items-start text-center lg:text-left"
+            style={{ flex: '1', maxWidth: '560px', width: '100%' }}
+          >
+            {/* Badge – centered on mobile, left on desktop */}
             <div
+              className="mx-auto lg:mx-0"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -151,7 +156,7 @@ export function Hero() {
               </span>
             </div>
 
-            {/* Headline */}
+            {/* Headline – centered on mobile */}
             <h1
               style={{
                 fontFamily: 'var(--font-syne), system-ui, sans-serif',
@@ -176,7 +181,7 @@ export function Hero() {
               </span>
             </h1>
 
-            {/* Subtitle */}
+            {/* Subtitle – centered on mobile */}
             <p
               style={{
                 fontSize: '1rem',
@@ -189,8 +194,9 @@ export function Hero() {
               {content.subtitle}
             </p>
 
-            {/* Divider */}
+            {/* Divider – centered on mobile */}
             <div
+              className="mx-auto lg:mx-0"
               style={{
                 width: '2rem',
                 height: '1px',
@@ -200,8 +206,8 @@ export function Hero() {
               }}
             />
 
-            {/* Buttons */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2.5rem' }}>
+            {/* Buttons – centered on mobile */}
+            <div className="flex flex-col items-center lg:items-start gap-4 mb-10 lg:mb-12">
               <Link
                 href="/products"
                 style={{
@@ -257,10 +263,10 @@ export function Hero() {
               </Link>
             </div>
 
-            {/* Stats */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+            {/* Stats – centered on mobile, left on desktop */}
+            <div className="flex items-center justify-center lg:justify-start gap-6 flex-wrap">
               {[content.stat1, content.stat2, content.stat3].map((stat, i) => (
-                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '0.125rem' }}>
+                <div key={i} className="flex flex-col items-center lg:items-start gap-1">
                   <span
                     style={{
                       fontFamily: 'var(--font-syne), sans-serif',
@@ -288,15 +294,10 @@ export function Hero() {
                   </span>
                 </div>
               ))}
-              <div style={{ width: '1px', height: '2rem', background: borderColor }} />
+              <div className="hidden lg:block" style={{ width: '1px', height: '2rem', background: borderColor }} />
               <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  fontSize: '0.6875rem',
-                  color: textMuted,
-                }}
+                className="flex items-center gap-2 text-xs mt-2 lg:mt-0"
+                style={{ color: textMuted }}
               >
                 <span
                   style={{
@@ -314,7 +315,7 @@ export function Hero() {
           </div>
 
           {/* Right column – product card + WhatsApp badge */}
-          <div style={{ flexShrink: 0, width: '360px' }}>
+          <div className="flex-shrink-0 w-full max-w-[360px] mt-10 lg:mt-0">
             {/* Main card */}
             <div
               style={{

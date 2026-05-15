@@ -103,8 +103,8 @@ function PropCard({
       onMouseLeave={() => setHovered(false)}
       onClick={onActivate}
       onKeyDown={(e) => e.key === 'Enter' && onActivate()}
+      className="w-full md:w-[calc(50%-0.75rem)] h-full"
       style={{
-        width: 'calc(50% - 0.75rem)', // exactly half minus gap/2
         marginBottom: '1.5rem',
         opacity: inView ? 1 : 0,
         transform: inView ? 'translateY(0)' : 'translateY(40px)',
@@ -171,9 +171,9 @@ function PropCard({
           pointerEvents: 'none',
         }}
       />
-      <div style={{ padding: '1.75rem' }}>
-        {/* Tag + metric row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div className="p-4 sm:p-7 text-center sm:text-left">
+        {/* Tag + metric row – stacked & centered on mobile */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6">
           <span
             style={{
               fontSize: '10px',
@@ -189,7 +189,7 @@ function PropCard({
           >
             {prop.tag}
           </span>
-          <div style={{ textAlign: 'right' }}>
+          <div className="text-center sm:text-right">
             <p
               style={{
                 fontFamily: 'var(--font-syne), sans-serif',
@@ -208,16 +208,10 @@ function PropCard({
           </div>
         </div>
 
-        {/* Icon */}
+        {/* Icon – centered on mobile */}
         <div
+          className="mx-auto sm:mx-0 w-12 h-12 rounded-xl flex items-center justify-center mb-6"
           style={{
-            width: '3rem',
-            height: '3rem',
-            borderRadius: '0.75rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '1.5rem',
             background: isActive
               ? prop.accent + '20'
               : isDark
@@ -268,12 +262,12 @@ function PropCard({
           }}
         >
           <p
+            className="text-xs sm:text-sm"
             style={{
-              fontSize: '0.75rem',
-              lineHeight: 1.5,
               color: prop.accent,
               borderLeft: `2px solid ${prop.accent}50`,
               paddingLeft: '0.75rem',
+              textAlign: 'center',
             }}
           >
             {prop.detail}
@@ -468,15 +462,10 @@ export function WhyKurate() {
           </div>
         </div>
 
-        {/* Cards container – flexbox, 2 per row */}
+        {/* Cards container – flexbox, 2 per row, stacked on mobile */}
         <div
           ref={gridRef}
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            gap: '1.5rem',
-          }}
+          className="flex flex-wrap justify-center gap-6"
         >
           {props.map((prop, i) => (
             <PropCard
@@ -558,14 +547,6 @@ export function WhyKurate() {
         }
         .group-hover\\:translate-x-1:hover svg {
           transform: translateX(4px);
-        }
-        /* Responsive: on mobile, make cards full width */
-        @media (max-width: 768px) {
-          div[style*="flex-wrap"] > div {
-            width: 100% !important;
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-          }
         }
       `}</style>
     </section>

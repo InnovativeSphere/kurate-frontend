@@ -1,3 +1,4 @@
+// components/CTASeller.tsx
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -65,7 +66,7 @@ export function CTASeller() {
         padding: 'clamp(80px, 12vw, 140px) 0',
       }}
     >
-      {/* Ambient backgrounds */}
+      {/* Ambient backgrounds – unchanged */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }} aria-hidden="true">
         <div
           style={{
@@ -108,16 +109,6 @@ export function CTASeller() {
             filter: 'blur(70px)',
           }}
         />
-        {isDark && (
-          <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.025 }} aria-hidden="true">
-            <defs>
-              <pattern id="cta-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-                <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#cta-grid)" />
-          </svg>
-        )}
       </div>
 
       <div style={{ position: 'relative', zIndex: 10, maxWidth: '1280px', margin: '0 auto', padding: '0 2rem' }}>
@@ -170,23 +161,15 @@ export function CTASeller() {
             }}
           />
 
-          {/* Content layout – flex column on mobile, row on desktop */}
-          <div
-            className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center"
-            style={{ padding: 'clamp(2rem, 5vw, 3rem)' }}
-          >
-            {/* Left column */}
-            <div className="flex-1">
+          {/* Content layout */}
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center" style={{ padding: 'clamp(1.5rem, 4vw, 3rem)' }}>
+            {/* Left column – centered on mobile */}
+            <div className="flex-1 w-full text-center lg:text-left">
               <div
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-4 mx-auto lg:mx-0"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.25rem 1rem',
-                  borderRadius: '9999px',
                   border: `1px solid ${isDark ? 'rgba(123,95,255,0.25)' : 'rgba(79,158,255,0.2)'}`,
                   background: isDark ? 'rgba(123,95,255,0.1)' : 'rgba(79,158,255,0.07)',
-                  marginBottom: '2rem',
                 }}
               >
                 <Store size={12} style={{ color: isDark ? 'var(--brand-lavender)' : 'var(--brand-blue)' }} />
@@ -204,14 +187,10 @@ export function CTASeller() {
               </div>
 
               <h2
+                className="text-2xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-4"
                 style={{
                   fontFamily: 'var(--font-syne), sans-serif',
-                  fontWeight: 800,
-                  lineHeight: 1.05,
-                  letterSpacing: '-0.03em',
-                  fontSize: 'clamp(2rem, 4.5vw, 2.8rem)',
                   color: 'var(--color-text-primary)',
-                  marginBottom: '1.5rem',
                 }}
               >
                 Your store.
@@ -230,23 +209,16 @@ export function CTASeller() {
                 Your terms.
               </h2>
 
-              <p
-                style={{
-                  fontSize: '1rem',
-                  lineHeight: 1.6,
-                  color: 'var(--color-text-secondary)',
-                  maxWidth: '38ch',
-                  marginBottom: '2rem',
-                }}
-              >
+              <p className="text-sm sm:text-base leading-relaxed mb-6" style={{ color: 'var(--color-text-secondary)' }}>
                 Stop selling from a cluttered Instagram grid. Give your buyers a proper place to browse — full specs, real photos, one tap to reach you.
               </p>
 
-              <div className="flex flex-col gap-4 mb-16">
+              {/* Perks – centered on mobile */}
+              <div className="space-y-3 mb-10">
                 {perks.map((perk, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3"
+                    className="flex items-center gap-3 justify-center lg:justify-start"
                     style={{
                       fontSize: '0.875rem',
                       color: 'var(--color-text-secondary)',
@@ -261,24 +233,24 @@ export function CTASeller() {
                 ))}
               </div>
 
-              {/* Buttons – fixed typo and padding */}
-              <div className="flex flex-col sm:flex-row gap-6">
+              {/* Buttons – stacked & centered on mobile */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
                   href="/register/role"
-                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-base font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98]"
+                  className="group inline-flex items-center justify-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-xl text-sm sm:text-base font-semibold text-white transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
                   style={{
                     background: 'var(--brand-gradient)',
                     boxShadow: '0 6px 28px -4px rgba(123,95,255,0.5)',
                   }}
                 >
-                  <Zap size={18} />
+                  <Zap size={16} />
                   Open your store — it&apos;s free
-                  <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1.5" />
+                  <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
 
                 <Link
                   href="/products"
-                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-base font-semibold transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98]"
+                  className="group inline-flex items-center justify-center gap-2 px-6 py-3 sm:px-8 sm:py-4 rounded-xl text-sm sm:text-base font-semibold transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
                   style={{
                     border: `2px solid ${isDark ? 'rgba(123,95,255,0.4)' : isLattie ? 'rgba(196,181,253,0.45)' : 'rgba(79,158,255,0.35)'}`,
                     color: 'var(--color-text-primary)',
@@ -304,14 +276,14 @@ export function CTASeller() {
                   }}
                 >
                   Browse first
-                  <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1.5" />
+                  <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </div>
             </div>
 
-            {/* Right column */}
+            {/* Right column – adjusted for mobile */}
             <div
-              className="flex-1 flex flex-col gap-6"
+              className="flex-1 w-full space-y-6"
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? 'translateX(0)' : 'translateX(32px)',
@@ -320,7 +292,7 @@ export function CTASeller() {
             >
               {/* Mock store card */}
               <div
-                className="rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-2xl"
+                className="rounded-2xl p-4 sm:p-8 transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] hover:shadow-2xl"
                 style={{
                   background: isDark
                     ? 'rgba(255,255,255,0.06)'
@@ -336,26 +308,26 @@ export function CTASeller() {
                   }`,
                 }}
               >
-                {/* Store header */}
-                <div className="flex items-center gap-5 mb-8">
+                {/* Store header – stack on mobile */}
+                <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
                   <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+                    className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0"
                     style={{ background: 'var(--brand-gradient)' }}
                   >
-                    <Store size={24} color="#fff" />
+                    <Store size={20} color="#fff" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 text-center sm:text-left">
                     <div
-                      className="h-3.5 rounded-full w-36 mb-2"
+                      className="h-3 rounded-full w-28 sm:w-36 mx-auto sm:mx-0 mb-2"
                       style={{ background: 'var(--color-border)' }}
                     />
                     <div
-                      className="h-3 rounded-full w-28"
+                      className="h-2.5 rounded-full w-20 sm:w-28 mx-auto sm:mx-0"
                       style={{ background: 'var(--color-border)', opacity: 0.6 }}
                     />
                   </div>
                   <div
-                    className="px-3 py-1.5 rounded-lg text-[11px] font-bold"
+                    className="px-3 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold mt-2 sm:mt-0"
                     style={{
                       background: 'rgba(0,184,110,0.15)',
                       color: '#00B86E',
@@ -366,8 +338,8 @@ export function CTASeller() {
                   </div>
                 </div>
 
-                {/* Product images grid */}
-                <div className="grid grid-cols-3 gap-5 mb-8">
+                {/* Product images – 2 cols on mobile, 3 cols on sm+ */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-5 mb-6">
                   {productImages.map((src, i) => (
                     <div
                       key={i}
@@ -382,22 +354,22 @@ export function CTASeller() {
                   ))}
                 </div>
 
-                {/* Share URL row */}
+                {/* Share URL – wrap on mobile */}
                 <div
-                  className="flex items-center gap-4 px-5 py-4 rounded-xl"
+                  className="flex flex-col sm:flex-row items-center gap-3 px-4 py-3 rounded-xl"
                   style={{
                     background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
                     border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'var(--color-border)'}`,
                   }}
                 >
                   <span
-                    className="text-base flex-1 font-mono"
-                    style={{ color: 'var(--color-text-primary)', fontWeight: 500, letterSpacing: '0.3px' }}
+                    className="text-xs sm:text-base flex-1 text-center sm:text-left font-mono truncate max-w-full"
+                    style={{ color: 'var(--color-text-primary)', fontWeight: 500 }}
                   >
                     kurate.ng/store/your-store
                   </span>
                   <button
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all hover:scale-105 active:scale-95"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all hover:scale-105 active:scale-95"
                     style={{
                       background: 'var(--brand-gradient)',
                       color: '#fff',
@@ -405,18 +377,18 @@ export function CTASeller() {
                     }}
                     aria-label="Copy store link"
                   >
-                    <Copy size={14} />
+                    <Copy size={12} />
                     Copy
                   </button>
                 </div>
               </div>
 
-              {/* Stat pills */}
-              <div className="flex flex-col gap-4">
+              {/* Stat pills – full width on mobile */}
+              <div className="space-y-3">
                 {stats.map((stat, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-6 px-6 py-5 rounded-xl transition-all duration-300 hover:translate-x-2 hover:scale-[1.01]"
+                    className="flex items-center gap-4 px-4 py-3 sm:px-6 sm:py-5 rounded-xl transition-all duration-300 hover:translate-x-2"
                     style={{
                       background: isDark
                         ? 'rgba(255,255,255,0.05)'
@@ -455,12 +427,12 @@ export function CTASeller() {
                     }}
                   >
                     <span
-                      className="font-display font-black text-2xl"
-                      style={{ color: stat.accent, minWidth: '70px' }}
+                      className="font-display font-black text-xl sm:text-2xl"
+                      style={{ color: stat.accent, minWidth: '60px' }}
                     >
                       {stat.value}
                     </span>
-                    <span className="text-base" style={{ color: 'var(--color-text-secondary)' }}>
+                    <span className="text-sm sm:text-base" style={{ color: 'var(--color-text-secondary)' }}>
                       {stat.label}
                     </span>
                     <div
@@ -476,8 +448,8 @@ export function CTASeller() {
       </div>
 
       <style jsx>{`
-        .group-hover\\:translate-x-1\\.5:hover svg {
-          transform: translateX(6px);
+        .group-hover\\:translate-x-1:hover svg {
+          transform: translateX(4px);
         }
       `}</style>
     </section>

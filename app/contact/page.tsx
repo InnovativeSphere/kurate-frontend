@@ -72,14 +72,14 @@ export default function ContactPage() {
         {/* Header */}
         <div
           ref={headerRef}
-          className="text-center mb-20 transition-all duration-700"
+          className="text-center mb-12 md:mb-20 transition-all duration-700"
           style={{
             opacity: headerInView ? 1 : 0,
             transform: headerInView ? "translateY(0)" : "translateY(20px)",
           }}
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-subtle mb-6">
-            <Mail size={32} className="text-primary" />
+          <div className="inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary-subtle mb-4 md:mb-6">
+            <Mail size={28} className="text-primary" />
           </div>
           <h1
             className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl mb-4"
@@ -87,17 +87,17 @@ export default function ContactPage() {
           >
             Get in <span style={{ color: accent }}>Touch</span>
           </h1>
-          <p className="text-base max-w-xl mx-auto" style={{ color: textSecondary }}>
+          <p className="text-sm sm:text-base max-w-xl mx-auto leading-relaxed" style={{ color: textSecondary }}>
             We’re here to help. A full contact form is on the way, but for now you can reach us directly via email.
           </p>
         </div>
 
-        {/* Contact Card */}
+        {/* Contact Card – increased internal spacing */}
         <AnimatedCard accentColor={accent} className="mb-16">
-          <div className="p-12 sm:p-16 space-y-16 text-center">
+          <div className="p-8 sm:p-12 md:p-16 space-y-14 md:space-y-20 text-center">
             {/* Coming soon badge */}
             <div
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider"
+              className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs font-semibold uppercase tracking-wider"
               style={{ background: `${accent}15`, color: accent }}
             >
               <Clock size={14} />
@@ -105,42 +105,42 @@ export default function ContactPage() {
             </div>
 
             {/* Email section */}
-            <div className="space-y-8">
+            <div className="space-y-8 md:space-y-10">
               <div className="flex justify-center">
                 <div
-                  className="w-24 h-24 rounded-2xl flex items-center justify-center"
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-2xl flex items-center justify-center"
                   style={{ background: `${accent}10`, color: accent }}
                 >
-                  <Send size={42} />
+                  <Send size={34} />
                 </div>
               </div>
 
-              <h2 className="text-2xl font-semibold" style={{ color: textPrimary }}>
+              <h2 className="text-xl md:text-2xl font-semibold" style={{ color: textPrimary }}>
                 Send us an email
               </h2>
-              <p className="text-base max-w-md mx-auto" style={{ color: textSecondary }}>
+              <p className="text-sm sm:text-base max-w-md mx-auto" style={{ color: textSecondary }}>
                 For any questions, suggestions, or support requests, drop us a message at:
               </p>
 
               <a
                 href="mailto:support.kurate@gmail.com"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-lg font-semibold transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-xl text-sm md:text-lg font-semibold transition-all hover:scale-105 active:scale-95 break-all"
                 style={{
                   background: `linear-gradient(135deg, ${accent}, ${accent}dd)`,
                   color: "#ffffff",
                   boxShadow: `0 8px 24px -8px ${accent}60`,
                 }}
               >
-                <Mail size={20} />
-                support.kurate@gmail.com
+                <Mail size={18} />
+                <span className="whitespace-nowrap">support.kurate@gmail.com</span>
               </a>
             </div>
 
             {/* Extra sparkle */}
             <div className="flex justify-center gap-4">
-              <Sparkles size={18} style={{ color: accent, opacity: 0.6 }} />
-              <Sparkles size={18} style={{ color: accent, opacity: 0.4 }} />
-              <Sparkles size={18} style={{ color: accent, opacity: 0.6 }} />
+              <Sparkles size={16} style={{ color: accent, opacity: 0.6 }} />
+              <Sparkles size={16} style={{ color: accent, opacity: 0.4 }} />
+              <Sparkles size={16} style={{ color: accent, opacity: 0.6 }} />
             </div>
 
             <p className="text-xs" style={{ color: textMuted }}>

@@ -1,3 +1,4 @@
+// components/ProblemSection.tsx
 'use client';
 
 import { useTheme } from '@/app/lib/theme';
@@ -109,9 +110,9 @@ function ProblemCard({
 
   return (
     <div
-      className="problem-card group relative"
+      className="problem-card group relative h-full"
       style={{
-        width: '100%', // will be controlled by flex parent
+        width: '100%',
         opacity: inView ? 1 : 0,
         transform: inView ? 'translateY(0) scale(1)' : 'translateY(32px) scale(0.97)',
         transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${index * 80}ms,
@@ -121,7 +122,7 @@ function ProblemCard({
       onMouseLeave={() => setHovered(false)}
     >
       <div
-        className="relative h-full rounded-2xl overflow-hidden cursor-default"
+        className="relative h-full rounded-2xl overflow-hidden cursor-default flex flex-col p-6 text-center sm:text-left"
         style={{
           background: isDark
             ? 'rgba(14,14,24,0.7)'
@@ -145,9 +146,9 @@ function ProblemCard({
             : isDark
             ? '0 2px 12px rgba(0,0,0,0.4)'
             : '0 2px 12px rgba(0,0,0,0.06)',
-          padding: '1.5rem',
         }}
       >
+        {/* Hover glow */}
         <div
           className="absolute -top-10 -right-10 w-32 h-32 rounded-full pointer-events-none"
           style={{
@@ -157,6 +158,8 @@ function ProblemCard({
             transition: 'opacity 0.4s ease',
           }}
         />
+
+        {/* Eyebrow – centered on mobile (inherits text-center) */}
         <p
           className="text-[10px] font-bold tracking-[0.2em] uppercase mb-4"
           style={{
@@ -166,7 +169,9 @@ function ProblemCard({
         >
           {problem.eyebrow}
         </p>
-        <div className="flex items-start gap-3 mb-4">
+
+        {/* Icon + Title – stacked & centered on mobile */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 mb-4">
           <div
             className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300"
             style={{
@@ -191,19 +196,23 @@ function ProblemCard({
           </div>
           <h3
             className="font-display font-bold text-base leading-snug"
-            style={{ color: 'var(--color-text-primary)', marginTop: '0.25rem' }}
+            style={{ color: 'var(--color-text-primary)' }}
           >
             {problem.title}
           </h3>
         </div>
+
+        {/* Body – centered on mobile (inherits text-center) */}
         <p
-          className="text-sm leading-relaxed mb-5"
+          className="text-sm leading-relaxed mb-5 flex-grow"
           style={{ color: 'var(--color-text-secondary)' }}
         >
           {problem.body}
         </p>
+
+        {/* Pain tag – centered on mobile via mx-auto, left on sm */}
         <div
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold w-fit mx-auto sm:mx-0"
           style={{
             background: problem.accent + (isDark ? '18' : '12'),
             color: problem.accent,
@@ -306,7 +315,7 @@ export function ProblemSection() {
           padding: '0 2rem',
         }}
       >
-        {/* Header – centered (same as before) */}
+        {/* Header – centered */}
         <div
           ref={headRef}
           style={{
@@ -428,24 +437,15 @@ export function ProblemSection() {
           </div>
         </div>
 
-        {/* Cards container – FLEXBOX: 2 cards per row */}
+        {/* Cards container – responsive grid */}
         <div
           ref={sectionRef}
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1.5rem',
-            justifyContent: 'center',
-          }}
+          className="flex flex-wrap gap-6 justify-center"
         >
           {problems.map((problem, i) => (
             <div
               key={problem.id}
-              style={{
-                flex: '0 0 calc(50% - 0.75rem)', // exactly 2 columns with gap accounted
-                maxWidth: 'calc(50% - 0.75rem)',
-              }}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-[calc(50%-0.75rem)]"
             >
               <ProblemCard
                 problem={problem}
@@ -506,8 +506,6 @@ export function ProblemSection() {
           </p>
         </div>
       </div>
-
-      {/* No extra style block needed – flex handles everything */}
     </section>
   );
 }
