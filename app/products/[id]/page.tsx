@@ -11,8 +11,8 @@ import {
   addToWishlist,
   removeFromWishlistByProductId,
 } from "../../redux/slices/wishlistSlice";
-import { TechLoader } from "../../components/TechLoader";                   // 👈 loader
-import { AuthRequiredModal } from "../../components/AuthRequiredModal";     // 👈 auth guard
+import { TechLoader } from "../../components/TechLoader"; // 👈 loader
+import { AuthRequiredModal } from "../../components/AuthRequiredModal"; // 👈 auth guard
 import { useThemeColors } from "../../hooks/useThemeColors";
 import {
   ArrowLeft,
@@ -86,17 +86,17 @@ export default function ProductDetailPage() {
   const dispatch = useAppDispatch();
 
   const { currentProduct, currentProductLoading, error } = useAppSelector(
-    (state: RootState) => state.product
+    (state: RootState) => state.product,
   );
   const { items: wishlistItems } = useAppSelector(
-    (state: RootState) => state.wishlist
+    (state: RootState) => state.wishlist,
   );
   const { isAuthenticated } = useAppSelector((state: RootState) => state.user); // 👈 auth state
   const { textPrimary, textSecondary, textMuted, border, accent, bgSubtle } =
     useThemeColors();
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [authModalOpen, setAuthModalOpen] = useState(false);   // 👈 auth modal state
+  const [authModalOpen, setAuthModalOpen] = useState(false); // 👈 auth modal state
 
   useEffect(() => {
     if (productId) {
@@ -110,19 +110,18 @@ export default function ProductDetailPage() {
 
   const product = currentProduct;
   const isWishlisted = wishlistItems.some(
-    (item) => item.product.id === productId
+    (item) => item.product.id === productId,
   );
-  const price = product
-    ? (product.price_in_cents / 100).toLocaleString()
-    : "0";
-  const images =
-    product?.images?.sort((a, b) => a.display_order - b.display_order) || [];
+  const price = product ? (product.price_in_cents / 100).toLocaleString() : "0";
+  const images = product?.images
+    ? [...product.images].sort((a, b) => a.display_order - b.display_order)
+    : [];
   const specs = product?.specs ? Object.entries(product.specs) : [];
 
   const handleToggleWishlist = () => {
     if (!product) return;
     if (!isAuthenticated) {
-      setAuthModalOpen(true);   // 👈 show login modal
+      setAuthModalOpen(true); // 👈 show login modal
       return;
     }
     if (isWishlisted) {
@@ -145,9 +144,7 @@ export default function ProductDetailPage() {
         style={{ background: bgSubtle }}
       >
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 relative z-10 pt-16 text-center">
-          <p className="text-red-500">
-            {error || "Product not found"}
-          </p>
+          <p className="text-red-500">{error || "Product not found"}</p>
           <button
             onClick={() => router.back()}
             className="mt-4 inline-flex items-center gap-2 text-sm"
@@ -401,7 +398,7 @@ export default function ProductDetailPage() {
                     <a
                       href={buildWhatsAppUrl(
                         product.seller.whatsapp_number,
-                        product.name
+                        product.name,
                       )}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -410,10 +407,7 @@ export default function ProductDetailPage() {
                       <Phone size={18} /> Contact Seller via WhatsApp
                     </a>
                   ) : (
-                    <p
-                      className="text-sm"
-                      style={{ color: textSecondary }}
-                    >
+                    <p className="text-sm" style={{ color: textSecondary }}>
                       No WhatsApp provided
                     </p>
                   )}
@@ -430,28 +424,56 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Auth guard modal */}
-      <AuthRequiredModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <AuthRequiredModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
 
       {/* Global animations */}
       <style jsx global>{`
         .moving-gradient-line {
-          background: linear-gradient(90deg, transparent, #4f9eff, #7b5fff, #c4b5fd, #7b5fff, #4f9eff, transparent);
+          background: linear-gradient(
+            90deg,
+            transparent,
+            #4f9eff,
+            #7b5fff,
+            #c4b5fd,
+            #7b5fff,
+            #4f9eff,
+            transparent
+          );
           background-size: 200% 100%;
           animation: flowGradient 3s linear infinite;
           opacity: 0.6;
         }
         @keyframes flowGradient {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 200% 50%; }
+          0% {
+            background-position: 0% 50%;
+          }
+          100% {
+            background-position: 200% 50%;
+          }
         }
         @keyframes floatOrb1 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -30px) scale(1.05); }
-          66% { transform: translate(-20px, 20px) scale(0.98); }
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -30px) scale(1.05);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.98);
+          }
         }
         @keyframes floatOrb2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-40px, 25px) scale(1.04); }
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+          }
+          50% {
+            transform: translate(-40px, 25px) scale(1.04);
+          }
         }
         .heart-pulse {
           animation: heartPulse 2s ease-in-out infinite;
@@ -460,23 +482,47 @@ export default function ProductDetailPage() {
           animation: heartBeatActive 1s ease-in-out infinite;
         }
         @keyframes heartPulse {
-          0%, 100% { transform: scale(1); }
-          25% { transform: scale(1.12); }
-          50% { transform: scale(1); }
-          75% { transform: scale(0.96); }
+          0%,
+          100% {
+            transform: scale(1);
+          }
+          25% {
+            transform: scale(1.12);
+          }
+          50% {
+            transform: scale(1);
+          }
+          75% {
+            transform: scale(0.96);
+          }
         }
         @keyframes heartBeatActive {
-          0%, 100% { transform: scale(1); }
-          15% { transform: scale(1.15); }
-          30% { transform: scale(1); }
-          45% { transform: scale(1.1); }
+          0%,
+          100% {
+            transform: scale(1);
+          }
+          15% {
+            transform: scale(1.15);
+          }
+          30% {
+            transform: scale(1);
+          }
+          45% {
+            transform: scale(1.1);
+          }
         }
         .animate-fade-in {
           animation: fadeIn 0.5s ease-out forwards;
         }
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         @media (prefers-reduced-motion: reduce) {
           .moving-gradient-line,
