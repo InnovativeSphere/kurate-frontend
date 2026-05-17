@@ -1,7 +1,7 @@
 // components/FeaturedProducts.tsx
 "use client";
 
-import { useTheme } from '@/app/lib/theme';
+import { useTheme } from "@/app/lib/theme";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -30,10 +30,14 @@ import { Product } from "../types/product";
 // ── Helper to convert condition to a score for the dots ──
 function conditionToScore(condition: string): number {
   switch (condition) {
-    case "NEW": return 5;
-    case "USED": return 3;
-    case "REFURBISHED": return 4;
-    default: return 3;
+    case "NEW":
+      return 5;
+    case "USED":
+      return 3;
+    case "REFURBISHED":
+      return 4;
+    default:
+      return 3;
   }
 }
 
@@ -56,6 +60,7 @@ function ConditionDots({ score, accent }: { score: number; accent: string }) {
   );
 }
 
+// ✅ Modified ProductCard – outer wrapper flex-1 for equal height
 function ProductCard({
   product,
   isDark,
@@ -85,39 +90,39 @@ function ProductCard({
 
   return (
     <div
-      className="shrink-0 w-full"
+      className="flex-1 flex flex-col w-full"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <div
-        className="relative rounded-2xl overflow-hidden h-full flex flex-col"
+        className="relative rounded-2xl overflow-hidden flex flex-col flex-1"
         style={{
           background: isDark
             ? "rgba(14,14,24,0.85)"
             : isLattie
-            ? "rgba(250,248,245,0.95)"
-            : "rgba(255,255,255,0.95)",
+              ? "rgba(250,248,245,0.95)"
+              : "rgba(255,255,255,0.95)",
           border: `1px solid ${isCentered ? accentColor + "60" : hovered ? accentColor + "55" : isDark ? "rgba(255,255,255,0.08)" : isLattie ? "rgba(196,181,253,0.25)" : "rgba(79,158,255,0.12)"}`,
           backdropFilter: "blur(16px)",
           boxShadow: isCentered
             ? `0 30px 60px -20px ${accentColor}`
             : hovered
-            ? `0 24px 48px -16px ${accentColor}35`
-            : isDark
-            ? "0 2px 16px rgba(0,0,0,0.4)"
-            : "0 2px 16px rgba(0,0,0,0.06)",
+              ? `0 24px 48px -16px ${accentColor}35`
+              : isDark
+                ? "0 2px 16px rgba(0,0,0,0.4)"
+                : "0 2px 16px rgba(0,0,0,0.06)",
           transform: isCentered
             ? "translateY(-8px) scale(1.01)"
             : hovered
-            ? "translateY(-4px)"
-            : "translateY(0)",
+              ? "translateY(-4px)"
+              : "translateY(0)",
           transition: "all 0.4s cubic-bezier(0.22,1,0.36,1)",
         }}
       >
-        {/* Image area – slightly shorter on mobile */}
+        {/* Image area */}
         <div
           className="relative overflow-hidden"
-          style={{ height: 'clamp(180px, 40vw, 240px)', flexShrink: 0 }}
+          style={{ height: "clamp(180px, 40vw, 240px)", flexShrink: 0 }}
         >
           {primaryImage && !imgError ? (
             <img
@@ -157,9 +162,7 @@ function ProductCard({
           <div
             className="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase"
             style={{
-              background: isDark
-                ? "rgba(0,0,0,0.7)"
-                : "rgba(255,255,255,0.9)",
+              background: isDark ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.9)",
               backdropFilter: "blur(8px)",
               color: accentColor,
               border: `1px solid ${accentColor}40`,
@@ -202,7 +205,7 @@ function ProductCard({
           </button>
         </div>
 
-        {/* Content – smaller paddings on mobile */}
+        {/* Content – Details button on its own line */}
         <div className="flex flex-col flex-1 p-3 sm:p-5">
           <h3
             className="font-display font-bold text-lg sm:text-xl mb-2"
@@ -218,7 +221,7 @@ function ProductCard({
               ? Object.values(product.specs).slice(0, 2).join(" · ")
               : ""}
           </p>
-          <div className="flex items-center gap-2 mb-5">
+          <div className="flex items-center gap-2 mb-4">
             <ConditionDots score={conditionScore} accent={accentColor} />
             <span
               className="text-xs font-medium"
@@ -227,47 +230,51 @@ function ProductCard({
               {product.condition}
             </span>
           </div>
-          <div className="flex items-center justify-between mt-auto">
-            <div>
-              <p
-                className="font-display font-black text-xl sm:text-2xl"
-                style={{ color: "var(--color-text-primary)" }}
+
+          {/* Price & seller info */}
+          <div className="mb-4">
+            <p
+              className="font-display font-black text-xl sm:text-2xl"
+              style={{ color: "var(--color-text-primary)" }}
+            >
+              ₦{price}
+            </p>
+            <div className="flex items-center gap-1 mt-1.5">
+              <span
+                className="text-xs"
+                style={{ color: "var(--color-text-muted)" }}
               >
-                ₦{price}
-              </p>
-              <div className="flex items-center gap-1 mt-1.5">
-                <span
-                  className="text-xs"
-                  style={{ color: "var(--color-text-muted)" }}
+                {sellerName}
+              </span>
+              {whatsapp && (
+                <a
+                  href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-green-400 hover:text-green-300"
+                  title="WhatsApp"
                 >
-                  {sellerName}
-                </span>
-                {whatsapp && (
-                  <a
-                    href={`https://wa.me/${whatsapp.replace(/\D/g, "")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-green-400 hover:text-green-300"
-                    title="WhatsApp"
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="..." />
-                    </svg>
-                  </a>
-                )}
-              </div>
+                    <path d="..." />
+                  </svg>
+                </a>
+              )}
             </div>
+          </div>
+
+          {/* Details button on its own line */}
+          <div className="mt-auto">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onView(product.id);
               }}
-              className="group flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+              className="w-full group flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
               style={{
                 background: "var(--brand-gradient)",
                 boxShadow: hovered
@@ -307,7 +314,7 @@ function useInView(threshold = 0.15) {
           obs.disconnect();
         }
       },
-      { threshold }
+      { threshold },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -322,21 +329,28 @@ export function FeaturedProducts() {
   const router = useRouter();
 
   const { products, loading } = useAppSelector(
-    (state: RootState) => state.product
+    (state: RootState) => state.product,
   );
   const { items: wishlistItems } = useAppSelector(
-    (state: RootState) => state.wishlist
+    (state: RootState) => state.wishlist,
   );
   const { sellers } = useAppSelector((state: RootState) => state.seller);
-  const { isAuthenticated } = useAppSelector(
-    (state: RootState) => state.user
-  );
+  const { isAuthenticated } = useAppSelector((state: RootState) => state.user);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  // Detect mobile breakpoint (below 640px)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const currentTheme = mounted ? (resolvedTheme ?? "dark") : "dark";
   const isDark = currentTheme === "dark";
@@ -351,19 +365,23 @@ export function FeaturedProducts() {
   const verifiedSellerIds = new Set<string>(
     sellers
       ?.filter((s) => s.verification_status === "VERIFIED")
-      .map((s) => s.id) || []
+      .map((s) => s.id) || [],
   );
   const filteredProducts = products.filter((p) =>
-    verifiedSellerIds.has(p.seller_id)
+    verifiedSellerIds.has(p.seller_id),
   );
 
-  const cardsToShow = 3;
-  const needCarousel = filteredProducts.length >= cardsToShow;
+  // Dynamic cards to show: 1 on mobile, 3 on desktop
+  const cardsToShow = isMobile ? 1 : 3;
+  const needCarousel =
+    (isMobile && filteredProducts.length > 1) || // mobile: any >1
+    (!isMobile && filteredProducts.length > cardsToShow); // desktop: >3
+
   const displayProducts = needCarousel
     ? [...filteredProducts, ...filteredProducts, ...filteredProducts]
     : filteredProducts;
 
-  // Auto‑advance
+  // Auto‑advance on mobile (always) and desktop when carousel is active
   useEffect(() => {
     if (!needCarousel) return;
     const timer = setInterval(() => {
@@ -409,39 +427,29 @@ export function FeaturedProducts() {
   const handleViewProduct = (id: string) => router.push(`/products/${id}`);
 
   const accentColors = ["#4F9EFF", "#7B5FFF", "#C4B5FD"];
-
-  // Card width: mobile full-width, md+ fixed 380px
-  const cardWidth = "clamp(0px, 100vw - 2rem, 380px)"; // on mobile takes nearly full width, on desktop fixed 380px
   const gap = 24;
-  // Compute offset in pixels using a dynamic measurement trick? We'll keep using CSS transforms with percentage?
-  // We'll calculate offset using the current card width. Since it varies, we can set transform to -index * 100% for mobile (single card view) and for desktop use pixel offset.
-  // Simplest: use CSS variable for card width, or just use percentage translation for mobile and pixel for desktop.
-  // We'll conditionally set the translateX value: on mobile (window width < 640px), translateX = -currentIndex * 100% (one card per view). On desktop, -currentIndex * (380+24)px.
-  // Since we're using inline styles, we can compute via a media query hook? Better: use a ref to measure card width, but to avoid complexity, we'll use a CSS approach:
-  // Wrap the cards container with a flex that has `overflow-hidden` and each card has `flex: 0 0 calc(100vw - 2rem)` on mobile and `flex: 0 0 380px` on desktop.
-  // Then set `transform: translateX(calc(-{currentIndex} * (100vw - 2rem)))` on mobile and `translateX(calc(-{currentIndex} * (380px + 24px)))` on desktop.
-  // We can achieve this by using CSS custom properties and media queries or by dynamically setting style with a state that tracks if mobile.
-  // Since this is a client component, we can detect mobile via window.innerWidth and update state on resize. But that adds complexity.
-  // Alternatively, we can just show a single card on mobile (not centered) and allow the carousel to slide one card at a time by translating the full width of the visible area.
-  // We'll set the container to `display: flex;` and each card to `flex: 0 0 100%` on mobile (sm breakpoint), and `flex: 0 0 calc(33.333% - 16px)` on desktop. Then we can translate by -currentIndex * 100% on mobile and by -currentIndex * (33.333% + gap/2?) hmm.
-  // Actually the easiest: keep the same logic but use `translateX(-${currentIndex * cardWidth}px)` where `cardWidth` is computed dynamically. We'll use a ref on the card container to measure its width after mount, and use that width to set the offset.
-  // To avoid perf issues, we'll measure the first card width in a useEffect and store it in state. Since card width changes on resize, we'll also listen to resize. I'll implement that.
 
-  const [cardMeasuredWidth, setCardMeasuredWidth] = useState(380);
+  // Dynamic card width: full viewport on mobile, fixed 300px on desktop
+  const [cardWidth, setCardWidth] = useState(
+    isMobile ? window.innerWidth - 32 : 300,
+  );
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updateWidth = () => {
       if (cardRef.current) {
-        setCardMeasuredWidth(cardRef.current.offsetWidth);
+        setCardWidth(cardRef.current.offsetWidth);
+      } else {
+        // fallback
+        setCardWidth(isMobile ? window.innerWidth - 32 : 300);
       }
     };
     updateWidth();
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
-  }, []);
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [isMobile]);
 
-  const offset = needCarousel ? -currentIndex * (cardMeasuredWidth + gap) : 0;
+  const offset = needCarousel ? -currentIndex * (cardWidth + gap) : 0;
 
   const { ref: headRef, inView: headInView } = useInView(0.2);
 
@@ -454,8 +462,8 @@ export function FeaturedProducts() {
           backgroundColor: isDark
             ? "#07070E"
             : isLattie
-            ? "#ECE9E3"
-            : "#F0F2FA",
+              ? "#ECE9E3"
+              : "#F0F2FA",
           padding: "clamp(80px, 12vw, 140px) 0",
         }}
       >
@@ -499,7 +507,7 @@ export function FeaturedProducts() {
         </div>
 
         <div style={{ position: "relative", zIndex: 10 }}>
-          {/* Header – centered */}
+          {/* Header */}
           <div
             ref={headRef}
             style={{
@@ -509,12 +517,11 @@ export function FeaturedProducts() {
               textAlign: "center",
               marginBottom: "clamp(3rem, 6vw, 4rem)",
               opacity: headInView ? 1 : 0,
-              transform: headInView
-                ? "translateY(0)"
-                : "translateY(24px)",
+              transform: headInView ? "translateY(0)" : "translateY(24px)",
               transition: "opacity 0.7s ease, transform 0.7s ease",
             }}
           >
+            {/* ... header unchanged ... */}
             <div
               style={{
                 display: "inline-flex",
@@ -532,9 +539,7 @@ export function FeaturedProducts() {
               <Star
                 size={12}
                 style={{
-                  color: isDark
-                    ? "var(--brand-lavender)"
-                    : "var(--brand-blue)",
+                  color: isDark ? "var(--brand-lavender)" : "var(--brand-blue)",
                   fill: "currentColor",
                 }}
               />
@@ -544,9 +549,7 @@ export function FeaturedProducts() {
                   fontWeight: 700,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
-                  color: isDark
-                    ? "var(--brand-lavender)"
-                    : "var(--brand-blue)",
+                  color: isDark ? "var(--brand-lavender)" : "var(--brand-blue)",
                 }}
               >
                 Featured listings
@@ -610,6 +613,7 @@ export function FeaturedProducts() {
             </div>
           ) : (
             <div style={{ position: "relative", marginBottom: "2rem" }}>
+              {/* Arrows */}
               {needCarousel && (
                 <>
                   <button
@@ -676,6 +680,7 @@ export function FeaturedProducts() {
                     transition: isTransitioning
                       ? "transform 0.4s cubic-bezier(0.22,1,0.36,1)"
                       : "none",
+                    justifyContent: needCarousel ? "flex-start" : "center",
                   }}
                   onTransitionEnd={handleTransitionEnd}
                 >
@@ -683,14 +688,15 @@ export function FeaturedProducts() {
                     (product, idx) => {
                       const isCentered =
                         needCarousel && idx === centeredCardIndex;
-                      const accent =
-                        accentColors[idx % accentColors.length];
+                      const accent = accentColors[idx % accentColors.length];
                       return (
                         <div
                           key={`${product.id}-${idx}`}
-                          ref={idx === 0 ? cardRef : undefined} // measure first card
-                          className="flex-shrink-0 w-[calc(100vw-2rem)] sm:w-[380px]"
-                          style={{ width: 'calc(100vw - 2rem)' }} // mobile full width, will be overridden by sm:w
+                          ref={idx === 0 ? cardRef : undefined}
+                          className="flex-shrink-0 flex flex-col"
+                          style={{
+                            width: isMobile ? `calc(100vw - 2rem)` : "300px",
+                          }}
                         >
                           <ProductCard
                             product={product}
@@ -704,7 +710,7 @@ export function FeaturedProducts() {
                           />
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
               </div>
@@ -712,9 +718,7 @@ export function FeaturedProducts() {
           )}
 
           {/* Stats */}
-          <div
-            style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem" }}
-          >
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem" }}>
             <div
               style={{
                 display: "flex",
