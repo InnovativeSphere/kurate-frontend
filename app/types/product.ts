@@ -78,6 +78,7 @@ export interface ProductFilters {
   min_price?: number;
   max_price?: number;
   search?: string;
+  seller_id?: string;   // ✅ new
 }
 
 // ✅ New types for file-based product creation (optional but helpful)

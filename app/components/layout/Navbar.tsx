@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   User,
   LogOut,
+  Store,
 } from "lucide-react";
 import { useTheme } from '@/app/lib/theme';
 import { ThemeSwitcher } from "../ui/ThemeSwitcher";
@@ -23,9 +24,10 @@ import { RootState } from "@/app/redux/store";
 import { logout } from "@/app/redux/slices/userSlice";
 
 const publicNavItems = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "Browse", href: "/products", icon: ShoppingBag },
-  { name: "About", href: "/about", icon: Info },
+  { name: "Home",    href: "/",          icon: Home },
+  { name: "Browse",  href: "/products",  icon: ShoppingBag },
+  { name: "Stores",  href: "/stores",    icon: Store },     // ✅ new
+  { name: "About",   href: "/about",     icon: Info },
 ];
 
 export function Navbar() {
